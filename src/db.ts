@@ -8,6 +8,7 @@ import Owner from './owner/entity'
 import Team from './team/entity'
 import Coach from './coach/entity'
 import Game from './game/entity'
+import Event from './events/entity'
 
 
 
@@ -41,7 +42,8 @@ export default () =>
       Owner,
       Team,
       Coach,
-      Game       
+      Game,
+      Event       
 
     ],
     synchronize: true,

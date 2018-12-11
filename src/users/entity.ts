@@ -4,8 +4,9 @@ import { MinLength, IsString, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
+import Owner from '../owner/entity'
 
-type Account = 'player' | 'coach' | 'owner' | 'member'
+type Account = 'player' | 'coach' | 'owner' | 'member' | 'admin'
 
 @Entity()
 export default class User extends BaseEntity {
@@ -42,6 +43,9 @@ export default class User extends BaseEntity {
 
   @OneToOne(_ => Coach, coach => coach.user)
   coach: Coach
+
+  @OneToOne(_ => Owner, owner => owner.user)
+  owner: Owner
 
 
 //   @OneToMany(() => Ticket, ticket => ticket.seller)

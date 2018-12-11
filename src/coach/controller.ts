@@ -1,14 +1,15 @@
-import { JsonController, Get, Param, Post, HttpCode } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body } from 'routing-controllers'
 import Coach from './entity'
 import User from '../users/entity'
-//import {io} from '../index'
+
 
 @JsonController()
 export default class CoachController {
 
   @Get('/coaches')
   allCoaches() {
-    return Coach.find()
+    const coaches = Coach.find()
+    return { coaches }
 
   }
   
@@ -16,30 +17,38 @@ export default class CoachController {
   getCoach(
     @Param('id') id: number
   ) {
-    return Coach.findOne(id)
+    const coach = Coach.findOne(id)
+    return { coach }
   }
 
 
 
-//   @Authorized()
-@Post('/coaches/:id')
-@HttpCode(201)
-async createCoach(
-  @Param('id') id: number
-) {
-  const user = await User.findOne(id)
+  @Authorized()
+  @Post('/coaches')
+  @HttpCode(201)
+  async createCoach(
+    @CurrentUser() currentUser: User,
+    @Body() data: Coach
+  ) {
+    const user = await User.findOne(currentUser.id)
 
-  
-  // user!.account = 'coach'
+    if (user){
+      user.account.push('coach')
+    }
 
-  user!.save()
+    user!.save()
 
-  const entity = Coach.create({
-    user,
-  }).save()
+    const { description } = data
 
-  return entity
-  
+    const entity = Coach.create({
+      user,
+      description,
+      team: null,
+      isNominated: false,
+      rank: null
+    }).save()
+
+    return {entity}
   }
 
 

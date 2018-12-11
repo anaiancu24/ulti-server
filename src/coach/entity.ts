@@ -17,10 +17,15 @@ export default class Coach extends BaseEntity {
 
   @OneToOne(_ => Team, team => team.coach)
   @JoinColumn()
-  team: Team
+  team: Team | null
 
   @OneToOne(_ => User, user => user.coach)
   @JoinColumn()
   user: User
   
+  @Column('boolean', {nullable: true})
+  isNominated: boolean
+
+  @Column('integer', {nullable: true})
+  rank: number | null
 }

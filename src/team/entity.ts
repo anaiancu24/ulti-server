@@ -1,7 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, OneToOne, JoinColumn } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
+import Owner from '../owner/entity'
 
 
 @Entity()
@@ -17,14 +18,17 @@ export default class Team extends BaseEntity {
 
   @IsString()
   @MinLength(2)
-  @Column('integer',{nullable: true})
+  @Column('integer', { nullable: true })
   rank: number
 
-  @OneToMany(_ => Player, player => player.team, {eager:true})
+  @OneToMany(_ => Player, player => player.team, { eager: true })
   players: Player[]
 
   @OneToOne(_ => Coach, coach => coach.team)
   @JoinColumn()
   coach: Coach
 
+  @ManyToOne(_ => Owner, owner => owner.teams)
+  @JoinColumn()
+  owner: Owner  
 }

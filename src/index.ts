@@ -10,9 +10,11 @@ import {Server} from 'http'
 import User from './users/entity'
 import UserController from './users/controller'
 import LoginController from './logins/controller'
-import PLayerController from './player/controller'
+import PlayerController from './player/controller'
 import TeamController from './team/controller'
 import CoachController from './coach/controller'
+import EventsController from './events/controller'
+import GameController from './game/controller'
 
 const app = new Koa()
 const server = new Server(app.callback())
@@ -24,9 +26,11 @@ useKoaServer(app, {
   controllers: [
       UserController,
       LoginController,
-      PLayerController,
+      PlayerController,
       TeamController,
-      CoachController
+      CoachController,
+      EventsController,
+      GameController
 
   ],
   authorizationChecker: (action: Action) => {

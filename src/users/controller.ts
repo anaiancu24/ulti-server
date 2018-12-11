@@ -39,13 +39,7 @@ export default class UserController {
             }).save()              
         }
 
-
-        // io.emit('action', {
-        //     type: 'ADD_USER',
-        //     payload: entity
-        // })
-      
-        return user
+        return {user}
     }
 
 
@@ -53,11 +47,13 @@ export default class UserController {
     getUser(
         @Param('id') id: number
     ) {
-        return User.findOne(id)   
+        const users = User.findOne(id) 
+        return {users}
     }
 
     @Get('/users')
     allUsers() { 
-        return User.find()
+        const user = User.find()
+        return {user}
     }
 }

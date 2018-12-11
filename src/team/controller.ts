@@ -1,21 +1,22 @@
 import { JsonController, Get, Param, Post, HttpCode, Body} from 'routing-controllers'
 import Team from './entity'
-//import {io} from '../index'
+
 
 @JsonController()
 export default class TeamController {
 
   @Get('/teams')
-  allEvents() {
-    return Team.find()
-
+  allTeams() {
+    const teams = Team.find()
+    return {teams}
   }
   
   @Get('/teams/:id')
-  getEvent(
+  getTeam(
     @Param('id') id: number
   ) {
-    return Team.findOne(id)
+    const team = Team.findOne(id)
+    return { team }
   }
 
 
@@ -31,14 +32,6 @@ export default class TeamController {
       name
     }).save()
 
-    // io.emit('action', {
-    //   type: 'ADD_EVENT',
-    //   payload: event
-    // })
-
-    return entity
-  
+    return {entity}
   }
-
-
 }

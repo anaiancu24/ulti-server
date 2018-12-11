@@ -24,8 +24,8 @@ export default class Player extends BaseEntity {
   isNominated: boolean
 
 
-  // @Column('integer', {nullable: true})
-  // rank: number
+  @Column('integer', {nullable: true})
+  rank: number | null
 
 
   @OneToOne(_ => User, user => user.player)
@@ -33,6 +33,6 @@ export default class Player extends BaseEntity {
   user: User
 
   @ManyToOne(_ => Team, team => team.players) 
-  team: Team
+  team: Team | null
 
 }

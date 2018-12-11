@@ -1,7 +1,6 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
-import { Exclude } from 'class-transformer';
-import { MinLength, IsString, IsEmail } from 'class-validator';
-
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
+import { MinLength, IsString } from 'class-validator'
+import Event from '../events/entity'
 
 @Entity()
 export default class Game extends BaseEntity {
@@ -12,29 +11,22 @@ export default class Game extends BaseEntity {
   @IsString()
   @MinLength(2)
   @Column('text')
-  name: string
+  homeTeam: string
 
+  @IsString()
   @MinLength(2)
+  @Column('text')
+  awayTeam: string
+  
   @Column('integer')
   homeScore: number
 
-  @IsEmail()
-  @Column('text')
-  email: string
+  @Column('integer')
+  awayScore: number
 
-  @IsString()
-  @MinLength(2)
-  @Column('text')
-  account: Account
+  // @Column('json')
+  // report: JSON
 
-  @IsString()
-  @MinLength(8)
-  @Column('text')
-  @Exclude({ toPlainOnly: true })
-  password: string
-
-//   @OneToMany(() => Ticket, ticket => ticket.seller)
-//   tickets: Ticket[];
-
-
+  @ManyToOne(() => Event, event => event.games)
+  event: Event | null
 }
