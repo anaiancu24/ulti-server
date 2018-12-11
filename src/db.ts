@@ -42,8 +42,7 @@ export default () =>
       Team,
       Coach,
       Game       
-       
-       
+
     ],
     synchronize: true,
     logging: true,

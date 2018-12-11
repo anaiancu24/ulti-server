@@ -27,10 +27,8 @@ export default class User extends BaseEntity {
   @Column('text')
   email: string
 
-  @IsString()
-  @MinLength(2)
-  @Column('text')
-  account: Account
+  @Column('simple-array')
+  account: Account[]
 
   @IsString()
   @MinLength(8)

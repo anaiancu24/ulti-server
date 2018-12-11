@@ -1,4 +1,5 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column } from 'typeorm'
+import { MinLength, IsString } from 'class-validator'
 import Team from '../team/entity'
 import User from '../users/entity'
 
@@ -7,6 +8,12 @@ export default class Coach extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
+
+  @IsString()
+  @MinLength(2)
+  @Column('text', {nullable: true})
+  description: string
+
 
   @OneToOne(_ => Team, team => team.coach)
   @JoinColumn()

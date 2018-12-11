@@ -30,7 +30,7 @@ async createCoach(
   const user = await User.findOne(id)
 
   
-  user!.account = 'coach'
+  // user!.account = 'coach'
 
   user!.save()
 

@@ -1,13 +1,13 @@
-import { JsonController, Get, Param, Post, HttpCode} from 'routing-controllers'
+import { JsonController, Get, Param } from 'routing-controllers'
 import Player from './entity'
-import User from '../users/entity';
+// import User from '../users/entity';
 //import {io} from '../index'
 
 @JsonController()
 export default class PLayerController {
 
   @Get('/players')
-  allEvents() {
+  allPlayers() {
     return Player.find()
    
   }
@@ -22,24 +22,21 @@ export default class PLayerController {
  
 
   // @Authorized()
-  @Post('/users/:id')
-  @HttpCode(201)
-  async createPlayer(
-    @Param('id') id: number
-  ) {
-    const user = await User.findOne(id)
+  // @Post('/players')
+  // @HttpCode(201)
+  // async createPlayer(
+  //   @Body() data: User
+  // ) {
+  //   const user = await User.findOne(id)
 
+  //   user!.save()
 
-    user!.account = 'player'
+  //   const entity = Player.create({
+  //     rank: 100,
+  //     user,
+  //   }).save()
 
-    user!.save()
-
-    const entity = Player.create({
-      rank: 100,
-      user,
-    }).save()
-
-    return entity
+  //   return entity
 
 
 
@@ -57,4 +54,3 @@ export default class PLayerController {
   }
 
 
-}
