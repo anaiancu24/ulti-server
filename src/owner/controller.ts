@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
 import User from '../users/entity'
 import Owner from './entity'
 import Team from '../team/entity';
@@ -56,22 +56,19 @@ export default class OwnerController {
     return {entity}
   }
 
-//   @Authorized()
-//   @Patch('/players/:id([0-9]+)')
-//   async updatePlayer(
-//     @Param('id') id: number,
-//     @Body() update: Partial<Player>
-//   ) {
-//     const player = await Player.findOne(id)
-//     if (!player) throw new NotFoundError('Cannot find ticket')
+  @Authorized()
+  @Patch('/owners/:id([0-9]+)')
+  async updateOwner(
+    @Param('id') id: number,
+    @Body() update: Partial<Owner>
+  ) {
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
 
-//     const updatedPlayer = await Player.merge(player, update)
+    const updatedOwner = await Owner.merge(owner, update)
 
+    await updatedOwner.save()
 
-//     await updatedPlayer.save()
-
-//     return {updatedPlayer}
+    return {updatedOwner}
+  }
 }
-
-
-

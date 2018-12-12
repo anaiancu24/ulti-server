@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm'
 import { Exclude } from 'class-transformer';
 import { MinLength, IsString, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt'
@@ -37,20 +37,14 @@ export default class User extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   password: string
 
-
   @OneToOne(_ => Player, player => player.user)
   player: Player
 
   @OneToOne(_ => Coach, coach => coach.user)
   coach: Coach
 
-  @OneToMany(_ => Owner, owner => owner.user)
-  owners: Owner
-
-
-//   @OneToMany(() => Ticket, ticket => ticket.seller)
-//   tickets: Ticket[];
-
+  @OneToOne(_ => Owner, owner => owner.user)
+  owner: Owner
 
   async setPassword(rawPassword: string) {
     const hash = await bcrypt.hash(rawPassword, 10)

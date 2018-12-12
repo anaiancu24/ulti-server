@@ -5,6 +5,13 @@ import Team from '../team/entity'
 import Owner from '../owner/entity'
 
 type Gender = "female" | "male"
+
+type SocialMedia = {
+  facebook: string
+  instagram: string
+  twitter: string
+}
+
 @Entity()
 export default class Player extends BaseEntity {
 
@@ -23,12 +30,15 @@ export default class Player extends BaseEntity {
   @IsString()
   @MinLength(2)
   @Column('text', {nullable: true})
-  description: string
+  gender: Gender
 
   @IsString()
   @MinLength(2)
   @Column('text', {nullable: true})
-  gender: Gender
+  description: string
+
+  @Column('text', {nullable: true})
+  socialMedia: SocialMedia
 
   @Column('boolean', {nullable: true})
   isNominated: boolean
@@ -44,7 +54,6 @@ export default class Player extends BaseEntity {
 
   @Column('boolean', {nullable: true})
   selected: boolean
-
 
   @ManyToOne(() => Owner, owner => owner.players)
   owners: Owner[] | null

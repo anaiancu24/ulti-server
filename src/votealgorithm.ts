@@ -18,10 +18,18 @@ export const voteCoach = (owner, coach) => {
 }
 
 export const votePlayer = (owner, player) => {
-  if (player.gender === "male" && owner.players.malePlayers.length < 7){
-    owner.players.malePlayers.push(player)
-  } else if (owner.players.femalePlayers.length < 7) {
-    owner.players.femalePlayers.push(player)
+  if (player.location === player.team.location) {
+    if (player.gender === "male" && owner.votedPlayers.malePlayers.length < 7){
+      owner.votedPlayers.malePlayers.push(player)
+    } else if (player.gender === "female" && owner.votedPlayers.femalePlayers.length < 7) {
+      owner.votedPlayers.femalePlayers.push(player)
+    }  
+  } else {
+    if (player.gender === "male" && owner.votedPlayers.outMale.length < 1){
+      owner.votedPlayers.outMale.push(player)
+    } else if (player.gender === "female" && owner.votedPlayers.outFemale.length < 1) {
+      owner.votedPlayers.outFemale.push(player)
+    }  
   }
 
 }
