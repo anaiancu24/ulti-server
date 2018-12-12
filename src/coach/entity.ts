@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Team from '../team/entity'
 import User from '../users/entity'
@@ -29,9 +29,6 @@ export default class Coach extends BaseEntity {
   @Column('text', {nullable: true})
   socialMedia: SocialMedia
 
-  @OneToOne(_ => Team, team => team.coach)
-  @JoinColumn()
-  team: Team | null
   
   @Column('boolean', {nullable: true})
   isNominated: boolean
@@ -42,8 +39,13 @@ export default class Coach extends BaseEntity {
   @Column('integer', {nullable: true})
   rank: number | null
 
-  @Column('boolean', {nullable: true})
-  selected: boolean
+  @ManyToMany(_ => Team, teams => teams.nominatedCoaches) 
+  nominatedTeams: Team[] | null
+
+  @OneToOne(_ => Team, team => team.selectedCoach)
+  @JoinColumn()
+  selectedTeam: Team | null
+
 
   @OneToMany(_ => Owner, owner => owner.votedCoach)
   @JoinColumn()

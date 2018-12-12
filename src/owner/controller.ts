@@ -1,8 +1,11 @@
 import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
 import User from '../users/entity'
 import Owner from './entity'
-import Team from '../team/entity';
-import {calculateVotingPower} from '../votealgorithm'
+import Team from '../team/entity'
+import Coach from '../coach/entity'
+import Player from '../player/entity'
+import {calculateVotingPower, updateVotingPower, voteCoach, votePlayer, calculateVotes} from '../votealgorithm'
+
 
 
 @JsonController()
@@ -65,10 +68,56 @@ export default class OwnerController {
     const owner = await Owner.findOne(id)
     if (!owner) throw new NotFoundError('Cannot find owner')
 
+    // Check for new shares
+    if (update.shares !== owner.shares) {
+      owner.team!.totalShares += await (update.shares! - owner.shares!)
+    }
+
     const updatedOwner = await Owner.merge(owner, update)
 
     await updatedOwner.save()
+    updateVotingPower(owner.team)
+
 
     return {updatedOwner}
   }
+
+
+  @Authorized()
+  @Patch('/owners/:id([0-9]+)/votecoach')
+  async ownerVoteCoach(
+    @Param('id') id: number,
+    @Body() update: Coach
+  ) {
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
+    const coach = await Coach.findOne(update.id)
+
+    voteCoach(owner, coach)
+
+    calculateVotes(coach)
+
+    return {coach}
+  }
+
+
+  @Authorized()
+  @Patch('/owners/:id([0-9]+)/voteplayer')
+  async ownerVotePlayer(
+    @Param('id') id: number,
+    @Body() update: Player
+  ) {
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
+    const player = await Player.findOne(update.id)
+
+    votePlayer(owner, player)
+
+    calculateVotes(player)
+
+    return {player}
+  }
+
 }

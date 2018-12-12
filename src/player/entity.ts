@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column , OneToOne, JoinColumn, ManyToOne } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column , OneToOne, JoinColumn, ManyToOne, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Team from '../team/entity'
@@ -43,17 +43,17 @@ export default class Player extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
-  @ManyToOne(_ => Team, team => team.players) 
-  team: Team | null
+  @ManyToMany(_ => Team, teams => teams.nominatedPlayers) 
+  nominatedTeams: Team[] | null
+
+  @ManyToOne(() => Team, team => team.selectedPlayers)
+  selectedTeam: Team | null
 
   @Column('integer', {nullable: true})
   votes: number | null
 
   @Column('integer', {nullable: true})
   rank: number | null
-
-  @Column('boolean', {nullable: true})
-  selected: boolean
 
   @ManyToOne(() => Owner, owner => owner.players)
   owners: Owner[] | null

@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn, JoinTable } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn, JoinTable, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
@@ -24,12 +24,20 @@ export default class Team extends BaseEntity {
   @Column('integer', { nullable: true })
   totalShares: number
 
-  @OneToMany(_ => Player, player => player.team, { eager: true })
-  players: Player[]
+  @OneToMany(_ => Player, player => player.nominatedTeams, { eager: true })
+  nominatedPlayers: Player[] | null
 
-  @OneToOne(_ => Coach, coach => coach.team)
+  @OneToMany(() => Player, player => player.selectedTeam)
+  selectedPlayers: Player[] | null
+
+  @ManyToMany(_ => Coach, coach => coach.nominatedTeams)
   @JoinColumn()
-  coach: Coach
+  nominatedCoaches: Coach[] | null
+
+  @OneToOne(() => Coach, coach => coach.selectedTeam)
+  selectedCoach: Coach | null
+
+
 
   @OneToMany(_ => Owner, owner => owner.team)
   @JoinTable()
