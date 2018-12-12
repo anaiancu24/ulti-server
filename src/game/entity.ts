@@ -8,17 +8,6 @@ export default class Game extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
-
-  // @IsString()
-  // @MinLength(2)
-  // @Column('text')
-  // homeTeam: string
-
-  // @IsString()
-  // @MinLength(2)
-  // @Column('text')
-  // awayTeam: string
-
   
   @Column('integer')
   homeScore: number

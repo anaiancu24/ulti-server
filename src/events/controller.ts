@@ -20,18 +20,14 @@ export default class EventsController {
   }
 
 
-  @Authorized()
+  // @Authorized()
 
   @Post('/events')
   @HttpCode(201)
   async createEvent(
-    @CurrentUser() currentUser: User,
     @Body() {location, name, startDate, endDate}:Event
   ) {
-    const user = await User.findOne(currentUser.id)
-    const { location, name } = data
 
-    if (user!.account.includes('admin')) {
       const entity = await Event.create({
         name,
         location,
@@ -43,8 +39,8 @@ export default class EventsController {
 
       return { entity }
     }
-  }
 }
+
 
 
 

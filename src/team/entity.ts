@@ -45,6 +45,6 @@ export default class Team extends BaseEntity {
   owners: Owner[] 
 
   @ManyToMany(_ => Game, game => game.teams)
-  @JoinTable()
-  games: Game[] 
+  games: Game[]
+  
 }
