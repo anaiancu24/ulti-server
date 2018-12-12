@@ -3,6 +3,7 @@ import { MinLength, IsString } from 'class-validator'
 import Team from '../team/entity'
 import User from '../users/entity'
 import Owner from '../owner/entity';
+import Selected from '../selected/entity';
 
 
 type SocialMedia = {
@@ -42,7 +43,7 @@ export default class Coach extends BaseEntity {
   // @ManyToMany(_ => Team, teams => teams.nominatedCoaches) 
   // nominatedTeams: Team[] | null
 
-  @OneToOne(_ => Team, team => team.selectedCoach)
+  @OneToOne(_ => Selected, selectedTeam => selectedTeam.coach, {eager: true})
   @JoinColumn()
   selectedTeam: Team | null
 

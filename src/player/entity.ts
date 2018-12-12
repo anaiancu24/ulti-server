@@ -3,6 +3,7 @@ import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Team from '../team/entity'
 import Owner from '../owner/entity'
+import Selected from '../selected/entity'
 
 type Gender = "female" | "male"
 
@@ -46,12 +47,6 @@ export default class Player extends BaseEntity {
   @ManyToMany(_ => Team, nominatedTeam => nominatedTeam.nominatedPlayers) 
   nominatedTeams: Team[] | null
 
-  // @ManyToOne(_ => Team, team => team.id, {eager: true}) 
-  // nominatedTeams: Team[] | null
-
-  // @ManyToOne(() => Team, selectedTeam => selectedTeam.selectedPlayers, { eager: true })
-  // selectedTeam: Team | null
-
   @Column('integer', {nullable: true})
   votes: number | null
 
@@ -60,4 +55,10 @@ export default class Player extends BaseEntity {
 
   @ManyToOne(() => Owner, owner => owner.players)
   owners: Owner[] | null
+
+  @ManyToOne(() => Selected, selectedTeam => selectedTeam.players)
+  selectedTeam: Selected | null
+
+
+  
 }
