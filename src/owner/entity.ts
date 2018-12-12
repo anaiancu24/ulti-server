@@ -1,8 +1,15 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column} from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToMany} from 'typeorm'
 import User from '../users/entity'
 import Team from '../team/entity'
 import Coach from '../coach/entity'
+import Player from '../player/entity';
 
+type votedPlayers = {
+malePlayers: Player[]
+femalePlayers: Player[]
+outMen: Player
+outFemale: Player  
+}
 
 @Entity()
 export default class Owner extends BaseEntity {
@@ -19,7 +26,14 @@ export default class Owner extends BaseEntity {
   @Column('integer', {nullable: true})
   shares: number | null
 
+  @Column('integer', {nullable: true})
+  votingPower: number | null
+
   @ManyToOne(() => Coach, coach => coach.owners) 
-  coach: Coach | null
+  votedCoach: Coach | null
+
+  @OneToMany(_ => Player, player => player.owners)
+  players: votedPlayers | null
+
 
 }

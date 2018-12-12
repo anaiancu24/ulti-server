@@ -3,7 +3,6 @@ import { MinLength, IsString } from 'class-validator'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
 import Owner from '../owner/entity'
-//mport Shares from '../shares/entity'
 
 
 @Entity()
@@ -17,8 +16,9 @@ export default class Team extends BaseEntity {
   @Column('text')
   name: string
 
-  @IsString()
-  @MinLength(2)
+  @Column('integer', { nullable: true })
+  totalShares: number
+
   @Column('integer', { nullable: true })
   rank: number
 

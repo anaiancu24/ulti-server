@@ -2,6 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column , OneToOne, JoinColu
 import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Team from '../team/entity'
+import Owner from '../owner/entity'
 
 type Gender = "female" | "male"
 @Entity()
@@ -9,6 +10,10 @@ export default class Player extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id?: number
+
+  @OneToOne(_ => User, user => user.player)
+  @JoinColumn()
+  user: User
 
   @IsString()
   @MinLength(2)
@@ -28,16 +33,19 @@ export default class Player extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
+  @ManyToOne(_ => Team, team => team.players) 
+  team: Team | null
+
+  @Column('integer', {nullable: true})
+  votes: number | null
 
   @Column('integer', {nullable: true})
   rank: number | null
 
+  @Column('boolean', {nullable: true})
+  selected: boolean
 
-  @OneToOne(_ => User, user => user.player)
-  @JoinColumn()
-  user: User
 
-  @ManyToOne(_ => Team, team => team.players) 
-  team: Team | null
-
+  @ManyToOne(() => Owner, owner => owner.players)
+  owners: Owner[] | null
 }

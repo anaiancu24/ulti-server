@@ -27,10 +27,12 @@ export default class Coach extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
-  @OneToMany(_ => Owner, owner => owner.coach)
+  @OneToMany(_ => Owner, owner => owner.votedCoach)
   @JoinColumn()
   owners: Owner[]
 
+  @Column('integer', {nullable: true})
+  votes: number | null
 
   @Column('integer', {nullable: true})
   rank: number | null

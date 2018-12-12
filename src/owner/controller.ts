@@ -2,7 +2,7 @@ import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Bo
 import User from '../users/entity'
 import Owner from './entity'
 import Team from '../team/entity';
-import Coach from '../coach/entity';
+import {calculateVotingPower} from '../votealgorithm'
 
 
 @JsonController()
@@ -31,14 +31,10 @@ export default class OwnerController {
     @CurrentUser() currentUser: User,
     @Body() data
   ) {
-    const { shares, teamId, coachId } = data
+    const { shares, teamId } = data
 
     const user = await User.findOne(currentUser.id)
     const team = await Team.findOne(teamId)
-    const coach = await Coach.findOne(coachId)
-
-    // const manPlayers = await manPlayerIds.filter(id => )
-    // const femalePlayers = await Player.find({where: {}})
 
     if (user){
       user.account.push('owner')
@@ -46,15 +42,16 @@ export default class OwnerController {
 
     await user!.save()
 
-    const entity = Owner.create({
+    const entity = await Owner.create({
       user,
       shares,
       team,
-      coach,
-      // femalePlayers,
-      // malePlayers
-
     }).save()
+
+    team!.totalShares = team!.totalShares + shares
+    await team!.save()
+
+    entity.votingPower = await calculateVotingPower(entity, team)
 
     return {entity}
   }
