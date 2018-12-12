@@ -11,7 +11,7 @@ export default class GameController {
     const games = await Game.find()
     return { games }
   }
-  
+
   @Get('/games/:id')
   async getGame(
     @Param('id') id: number
@@ -29,10 +29,10 @@ export default class GameController {
     @Body() data
   ) {
     //const user = await User.findOne(currentUser.id)
-    const {homeTeam, awayTeam, homeScore, awayScore, id} = data
+    const { homeTeam, awayTeam, homeScore, awayScore, id } = data
     const event = await Event.findOne(id)
     //if ( user!.account.includes('admin') ){
-      
+
     const entity = await Game.create({
       homeTeam,
       awayTeam,
@@ -41,9 +41,9 @@ export default class GameController {
       event
     }).save()
 
-      return { entity }
-    }
+    return { entity }
   }
+}
 // }  
 
 

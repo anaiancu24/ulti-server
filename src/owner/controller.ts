@@ -2,7 +2,7 @@ import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Bo
 import User from '../users/entity'
 import Owner from './entity'
 import Team from '../team/entity';
-import {calculateVotingPower} from '../votealgorithm'
+import { calculateVotingPower } from '../votealgorithm'
 
 
 @JsonController()
@@ -11,15 +11,15 @@ export default class OwnerController {
   @Get('/owners')
   async allOwners() {
     const owners = await Owner.find()
-    return {owners}
+    return { owners }
   }
-  
+
   @Get('/owners/:id')
   async getOwner(
     @Param('id') id: number
   ) {
     const owner = await Owner.findOne(id)
-    return {owner}
+    return { owner }
   }
 
 
@@ -36,7 +36,7 @@ export default class OwnerController {
     const user = await User.findOne(currentUser.id)
     const team = await Team.findOne(teamId)
 
-    if (user){
+    if (user) {
       user.account.push('owner')
     }
 
@@ -53,24 +53,24 @@ export default class OwnerController {
 
     entity.votingPower = await calculateVotingPower(entity, team)
 
-    return {entity}
+    return { entity }
   }
 
-//   @Authorized()
-//   @Patch('/players/:id([0-9]+)')
-//   async updatePlayer(
-//     @Param('id') id: number,
-//     @Body() update: Partial<Player>
-//   ) {
-//     const player = await Player.findOne(id)
-//     if (!player) throw new NotFoundError('Cannot find ticket')
+  //   @Authorized()
+  //   @Patch('/players/:id([0-9]+)')
+  //   async updatePlayer(
+  //     @Param('id') id: number,
+  //     @Body() update: Partial<Player>
+  //   ) {
+  //     const player = await Player.findOne(id)
+  //     if (!player) throw new NotFoundError('Cannot find ticket')
 
-//     const updatedPlayer = await Player.merge(player, update)
+  //     const updatedPlayer = await Player.merge(player, update)
 
 
-//     await updatedPlayer.save()
+  //     await updatedPlayer.save()
 
-//     return {updatedPlayer}
+  //     return {updatedPlayer}
 }
 
 

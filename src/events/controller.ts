@@ -11,7 +11,7 @@ export default class EventsController {
     const events = await Event.find()
     return { events }
   }
-  
+
   @Get('/events/:id')
   async getEvent(
     @Param('id') id: number
@@ -19,8 +19,6 @@ export default class EventsController {
     const event = await Event.findOne(id)
     return { event }
   }
-
-
 
   @Authorized()
   @Post('/events')
@@ -30,10 +28,10 @@ export default class EventsController {
     @Body() data: Event
   ) {
     const user = await User.findOne(currentUser.id)
-    const {location, name} = data
+    const { location, name } = data
 
-    if ( user!.account.includes('admin') ){
-      
+    if (user!.account.includes('admin')) {
+
       const entity = await Event.create({
         name,
         location,
@@ -41,9 +39,9 @@ export default class EventsController {
         teams: null
       }).save()
 
-      return {entity}
+      return { entity }
     }
   }
-}  
+}
 
 
