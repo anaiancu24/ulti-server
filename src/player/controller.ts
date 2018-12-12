@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
 import Player from './entity'
 import User from '../users/entity';
 
@@ -7,21 +7,20 @@ import User from '../users/entity';
 export default class PLayerController {
 
   @Get('/players')
-  allPlayers() {
-    const players = Player.find()
-    return {players}
+  async allPlayers() {
+    const players = await Player.find()
 
+    return {players}
   }
   
   @Get('/players/:id')
-  getPlayer(
+  async getPlayer(
     @Param('id') id: number
   ) {
-    const player = Player.findOne(id)
+    const player = await Player.findOne(id)
+
     return {player}
   }
-
-
 
   @Authorized()
   @Post('/players')
@@ -36,11 +35,11 @@ export default class PLayerController {
       user.account.push('player')
     }
 
-    user!.save()
+    await user!.save()
 
     const { location, description } = data
 
-    const entity = Player.create({
+    const entity = await Player.create({
       rank: null,
       user,
       location,
@@ -49,7 +48,24 @@ export default class PLayerController {
       team: null
     }).save()
 
-    return entity
+    return {entity}
+  }
+
+
+  @Authorized()
+  @Patch('/players/:id([0-9]+)')
+  async updatePlayer(
+    @Param('id') id: number,
+    @Body() update: Partial<Player>
+  ) {
+    const player = await Player.findOne(id)
+    if (!player) throw new NotFoundError('Cannot find ticket')
+
+    const updatedPlayer = await Player.merge(player, update)
+
+    await updatedPlayer.save()
+
+    return {updatedPlayer}
   }
 }  
 

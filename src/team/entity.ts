@@ -1,8 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, OneToOne, JoinColumn } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, OneToOne, JoinColumn, JoinTable } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
 import Owner from '../owner/entity'
+//mport Shares from '../shares/entity'
 
 
 @Entity()
@@ -28,7 +29,10 @@ export default class Team extends BaseEntity {
   @JoinColumn()
   coach: Coach
 
-  @ManyToOne(_ => Owner, owner => owner.teams)
-  @JoinColumn()
-  owner: Owner  
+  @ManyToMany(_ => Owner, owner => owner.team)
+  @JoinTable()
+  owners: Owner[] 
+  
+  // @OneToMany(() => Shares, shares => shares.team)
+  // shares: Shares[] | null
 }

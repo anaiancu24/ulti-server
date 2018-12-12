@@ -1,5 +1,4 @@
 import { JsonController, Get, Param, Post, HttpCode, Body } from 'routing-controllers'
-// import User from '../users/entity'
 import Game from './entity'
 import Event from '../events/entity'
 
@@ -8,20 +7,18 @@ import Event from '../events/entity'
 export default class GameController {
 
   @Get('/games')
-  allGames() {
-    const games = Game.find()
+  async allGames() {
+    const games = await Game.find()
     return { games }
-
   }
   
   @Get('/games/:id')
-  getGame(
+  async getGame(
     @Param('id') id: number
   ) {
-    const game = Game.findOne(id)
+    const game = await Game.findOne(id)
     return { game }
   }
-
 
 
   //@@Authorized()
@@ -36,7 +33,7 @@ export default class GameController {
     const event = await Event.findOne(id)
     //if ( user!.account.includes('admin') ){
       
-    const entity = Game.create({
+    const entity = await Game.create({
       homeTeam,
       awayTeam,
       homeScore,
@@ -45,7 +42,6 @@ export default class GameController {
     }).save()
 
       return { entity }
-
     }
   }
 // }  

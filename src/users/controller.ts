@@ -3,7 +3,7 @@ import User from './entity'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
 import Owner from '../owner/entity'
-//import { io } from '../index'
+
 
 @JsonController()
 export default class UserController {
@@ -19,7 +19,7 @@ export default class UserController {
         const user = await entity.save()
 
         if (account.includes('player')) {
-            Player.create({
+            await Player.create({
                 user,
                 location:"",
                 description: ""
@@ -27,14 +27,15 @@ export default class UserController {
         }
 
         if (account.includes('coach')) {
-            Coach.create({
+            await Coach.create({
                 user,
                 description: ""        
             }).save()              
         }        
 
+        // check it out later
         if (account.includes('owner')) {
-            Owner.create({
+            await Owner.create({
                 user,
             }).save()              
         }
@@ -44,16 +45,16 @@ export default class UserController {
 
 
     @Get('/users/:id([0-9]+)')
-    getUser(
+    async getUser(
         @Param('id') id: number
     ) {
-        const users = User.findOne(id) 
+        const users = await User.findOne(id) 
         return {users}
     }
 
     @Get('/users')
-    allUsers() { 
-        const user = User.find()
+    async allUsers() { 
+        const user =await User.find()
         return {user}
     }
 }

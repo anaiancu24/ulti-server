@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
-import { MinLength, IsString } from 'class-validator'
+import { MinLength, IsString, IsDateString } from 'class-validator'
 import Event from '../events/entity'
 
 @Entity()
@@ -23,6 +23,10 @@ export default class Game extends BaseEntity {
 
   @Column('integer')
   awayScore: number
+
+  @IsDateString()
+  @Column('date', {nullable:true})
+  date: Date | null
 
   // @Column('json')
   // report: JSON

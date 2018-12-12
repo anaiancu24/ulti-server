@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm'
 import { Exclude } from 'class-transformer';
 import { MinLength, IsString, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcrypt'
@@ -44,8 +44,8 @@ export default class User extends BaseEntity {
   @OneToOne(_ => Coach, coach => coach.user)
   coach: Coach
 
-  @OneToOne(_ => Owner, owner => owner.user)
-  owner: Owner
+  @OneToMany(_ => Owner, owner => owner.user)
+  owners: Owner
 
 
 //   @OneToMany(() => Ticket, ticket => ticket.seller)

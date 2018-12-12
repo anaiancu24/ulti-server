@@ -1,11 +1,7 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, OneToMany, Column} from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column} from 'typeorm'
 import User from '../users/entity'
 import Team from '../team/entity'
-
-type Shares = {
-  teamName: string,
-  numberOfShares: number
-}
+import Coach from '../coach/entity'
 
 
 @Entity()
@@ -14,14 +10,16 @@ export default class Owner extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @OneToOne(_ => User, user => user.player)
-  @JoinColumn()
-  user: User
+  @ManyToOne(_ => User, user => user.owners)
+  user: User | null
 
-  @OneToMany(_ => Team, team => team.owner) 
-  teams: Team[] | null
+  @ManyToOne(() => Team, team => team.owners) 
+  team: Team | null
 
-  @Column('simple-array', {nullable: true})
-  shares: Shares[] | null
+  @Column('integer', {nullable: true})
+  shares: number | null
+
+  @ManyToOne(() => Coach, coach => coach.owners) 
+  coach: Coach | null
 
 }

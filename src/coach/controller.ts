@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
 import Coach from './entity'
 import User from '../users/entity'
 
@@ -7,21 +7,19 @@ import User from '../users/entity'
 export default class CoachController {
 
   @Get('/coaches')
-  allCoaches() {
-    const coaches = Coach.find()
+  async allCoaches() {
+    const coaches = await Coach.find()
     return { coaches }
 
   }
   
   @Get('/coaches/:id')
-  getCoach(
+  async getCoach(
     @Param('id') id: number
   ) {
-    const coach = Coach.findOne(id)
+    const coach = await Coach.findOne(id)
     return { coach }
   }
-
-
 
   @Authorized()
   @Post('/coaches')
@@ -36,11 +34,11 @@ export default class CoachController {
       user.account.push('coach')
     }
 
-    user!.save()
+    await user!.save()
 
     const { description } = data
 
-    const entity = Coach.create({
+    const entity = await Coach.create({
       user,
       description,
       team: null,
@@ -49,6 +47,22 @@ export default class CoachController {
     }).save()
 
     return {entity}
+  }
+
+  @Authorized()
+  @Patch('/coaches/:id([0-9]+)')
+  async updateCoach(
+    @Param('id') id: number,
+    @Body() update: Partial<Coach>
+  ) {
+    const coach = await Coach.findOne(id)
+    if (!coach) throw new NotFoundError('Cannot find coach')
+
+    const updatedCoach = await Coach.merge(coach, update)
+
+    await updatedCoach.save()
+
+    return {updatedCoach}
   }
 
 

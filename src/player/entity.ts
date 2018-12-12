@@ -3,7 +3,7 @@ import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Team from '../team/entity'
 
-
+type Gender = "female" | "male"
 @Entity()
 export default class Player extends BaseEntity {
 
@@ -19,6 +19,11 @@ export default class Player extends BaseEntity {
   @MinLength(2)
   @Column('text', {nullable: true})
   description: string
+
+  @IsString()
+  @MinLength(2)
+  @Column('text', {nullable: true})
+  gender: Gender
 
   @Column('boolean', {nullable: true})
   isNominated: boolean

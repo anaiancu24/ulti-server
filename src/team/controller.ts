@@ -6,20 +6,18 @@ import Team from './entity'
 export default class TeamController {
 
   @Get('/teams')
-  allTeams() {
-    const teams = Team.find()
+  async allTeams() {
+    const teams = await Team.find()
     return {teams}
   }
   
   @Get('/teams/:id')
-  getTeam(
+  async getTeam(
     @Param('id') id: number
   ) {
-    const team = Team.findOne(id)
+    const team = await Team.findOne(id)
     return { team }
   }
-
-
 
 //   @Authorized()
   @Post('/teams')
