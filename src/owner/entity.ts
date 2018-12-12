@@ -1,14 +1,14 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToMany} from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToMany, OneToOne } from 'typeorm'
 import User from '../users/entity'
 import Team from '../team/entity'
 import Coach from '../coach/entity'
 import Player from '../player/entity';
 
-type votedPlayers = {
+type VotedPlayers = {
 malePlayers: Player[]
 femalePlayers: Player[]
 outMen: Player
-outFemale: Player  
+outFemale: Player
 }
 
 @Entity()
@@ -17,7 +17,7 @@ export default class Owner extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(_ => User, user => user.owners)
+  @OneToOne(_ => User, user => user.owner)
   user: User | null
 
   @ManyToOne(() => Team, team => team.owners) 
@@ -33,7 +33,7 @@ export default class Owner extends BaseEntity {
   votedCoach: Coach | null
 
   @OneToMany(_ => Player, player => player.owners)
-  players: votedPlayers | null
+  players: VotedPlayers | null
 
 
 }

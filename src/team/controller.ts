@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Body } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Body, Authorized} from 'routing-controllers'
 import Team from './entity'
 
 
@@ -18,8 +18,9 @@ export default class TeamController {
     const team = await Team.findOne(id)
     return { team }
   }
-
-  //   @Authorized()
+  
+  
+ @Authorized()
   @Post('/teams')
   @HttpCode(201)
   async createTeam(
