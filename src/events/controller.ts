@@ -1,5 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body } from 'routing-controllers'
-import User from '../users/entity'
+import { JsonController, Get, Param, Post, HttpCode, Body } from 'routing-controllers'
 import Event from './entity'
 
 
@@ -8,7 +7,7 @@ export default class EventsController {
 
   @Get('/events')
   async allEvents() {
-    const events = await Event.find()
+    const events = await Event.find({relations: ['games']})
     return { events }
   }
   
@@ -22,28 +21,25 @@ export default class EventsController {
 
 
 
-  @Authorized()
+  // @Authorized()
   @Post('/events')
   @HttpCode(201)
   async createEvent(
-    @CurrentUser() currentUser: User,
-    @Body() data: Event
+    // @CurrentUser() currentUser: User,
+    @Body() {location, name, startDate, endDate}:Event
   ) {
-    const user = await User.findOne(currentUser.id)
-    const {location, name} = data
-
-    if ( user!.account.includes('admin') ){
       
       const entity = await Event.create({
         name,
         location,
+        startDate,
+        endDate,
         games: null,
         teams: null
       }).save()
 
       return {entity}
     }
-  }
 }  
 
 

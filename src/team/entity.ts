@@ -3,6 +3,7 @@ import { MinLength, IsString } from 'class-validator'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
 import Owner from '../owner/entity'
+import Game from '../game/entity'
 
 
 @Entity()
@@ -42,5 +43,8 @@ export default class Team extends BaseEntity {
   @OneToMany(_ => Owner, owner => owner.team)
   @JoinTable()
   owners: Owner[] 
-  
+
+  @ManyToMany(_ => Game, game => game.teams)
+  @JoinTable()
+  games: Game[] 
 }
