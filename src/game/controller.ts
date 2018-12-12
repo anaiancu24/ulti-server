@@ -26,21 +26,19 @@ export default class GameController {
   @HttpCode(201)
   async createGame(
     //@CurrentUser() currentUser: User,
-    @Body() data
+    @Body() {teams, homeScore, awayScore, date, id}:Game
   ) {
     //const user = await User.findOne(currentUser.id)
-    const {homeTeam, awayTeam, homeScore, awayScore, id} = data
     const event = await Event.findOne(id)
     //if ( user!.account.includes('admin') ){
       
     const entity = await Game.create({
-      homeTeam,
-      awayTeam,
       homeScore,
       awayScore,
-      event
+      event,
+      teams,
+      date
     }).save()
-
       return { entity }
     }
   }

@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
-import { MinLength, IsString, IsDateString } from 'class-validator';
+import { MinLength, IsString} from 'class-validator';
 import Team from '../team/entity'
 import Game from '../game/entity'
 
@@ -19,11 +19,10 @@ export default class Event extends BaseEntity {
   @Column('text', {nullable: true})
   location: string
 
-  @IsDateString()
+  
   @Column('date', {nullable: true})
   startDate: Date | null
 
-  @IsDateString()
   @Column('date', {nullable: true})
   endDate: Date | null
 
@@ -31,6 +30,7 @@ export default class Event extends BaseEntity {
   teams: Team[] | null
 
 
-  @OneToMany(() => Game, game => game.event)
+  @OneToMany(() => Game, game => game.event, {nullable: true})
+  // @JoinColumn({name: 'games'}) 
   games: Game[] | null;
 }

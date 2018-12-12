@@ -10,7 +10,6 @@ export default class CoachController {
   async allCoaches() {
     const coaches = await Coach.find()
     return { coaches }
-
   }
   
   @Get('/coaches/:id')

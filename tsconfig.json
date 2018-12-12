@@ -20,7 +20,7 @@
     "rootDir": "src/"
   },
   "include": [
-    "src/**/*",
+    "src/**/*", "../ulti-league-rwp-client/src/actions/owners.js", "../ulti-league-rwp-client/src/components/Owners/OwnerProfileContainer.js", "../ulti-league-rwp-client/src/components/Owners/OwnersOverview.js", "../ulti-league-rwp-client/src/components/Owners/OwnersOverviewContainer.js", "../ulti-league-rwp-client/src/components/Owners/OwnerProfile.js", "../ulti-league-rwp-client/src/reducers/owners.js",
   ],
   "exclude": [
     "node_modules",
