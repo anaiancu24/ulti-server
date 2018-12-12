@@ -8,18 +8,23 @@ export default class PLayerController {
 
   @Get('/players')
   async allPlayers() {
-    const players = await Player.find()
-
-    return {players}
+    const players = await Player.find({
+      relations: ['user', 'team']
+    })
+    return { players }
   }
-  
+
   @Get('/players/:id')
   async getPlayer(
     @Param('id') id: number
   ) {
-    const player = await Player.findOne(id)
-
-    return {player}
+    const player = await Player.findOne({
+      where: {
+        id
+      },
+      relations: ['user', 'team']
+    })
+    return { player }
   }
 
   @Authorized()
@@ -31,7 +36,7 @@ export default class PLayerController {
   ) {
     const user = await User.findOne(currentUser.id)
 
-    if (user){
+    if (user) {
       user.account.push('player')
     }
 
@@ -51,7 +56,7 @@ export default class PLayerController {
       socialMedia
     }).save()
 
-    return {entity}
+    return { entity }
   }
 
 
@@ -62,14 +67,14 @@ export default class PLayerController {
     @Body() update: Partial<Player>
   ) {
     const player = await Player.findOne(id)
-    if (!player) throw new NotFoundError('Cannot find ticket')
+    if (!player) throw new NotFoundError('Cannot find Player')
 
     const updatedPlayer = await Player.merge(player, update)
 
     await updatedPlayer.save()
 
-    return {updatedPlayer}
+    return { updatedPlayer }
   }
-}  
+}
 
 

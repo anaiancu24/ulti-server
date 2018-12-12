@@ -12,7 +12,7 @@ export default class GameController {
     const games = await Game.find()
     return { games }
   }
-  
+
   @Get('/games/:id')
   async getGame(
     @Param('id') id: number
@@ -26,12 +26,16 @@ export default class GameController {
   @Post('/games')
   @HttpCode(201)
   async createGame(
-    //@CurrentUser() currentUser: User,
+    @CurrentUser() currentUser: User,
     @Body() {teams, homeScore, awayScore, date, id}:Game
   ) {
+
+    const user = await User.findOne(currentUser.id)
+    const { homeTeam, awayTeam, homeScore, awayScore, id } = data
     const event = await Event.findOne(id)
     if ( user!.account.includes('admin') ){
-      
+
+
     const entity = await Game.create({
       homeScore,
       awayScore,
@@ -39,9 +43,12 @@ export default class GameController {
       teams,
       date
     }).save()
-      return { entity }
-    }
+
+
+    return { entity }
   }
- }  
+}
+
+
 
 

@@ -14,15 +14,15 @@ export default class OwnerController {
   @Get('/owners')
   async allOwners() {
     const owners = await Owner.find()
-    return {owners}
+    return { owners }
   }
-  
+
   @Get('/owners/:id')
   async getOwner(
     @Param('id') id: number
   ) {
     const owner = await Owner.findOne(id)
-    return {owner}
+    return { owner }
   }
 
 
@@ -39,7 +39,7 @@ export default class OwnerController {
     const user = await User.findOne(currentUser.id)
     const team = await Team.findOne(teamId)
 
-    if (user){
+    if (user) {
       user.account.push('owner')
     }
 
@@ -56,9 +56,10 @@ export default class OwnerController {
 
     entity.votingPower = await calculateVotingPower(entity, team)
 
-    return {entity}
+    return { entity }
   }
 
+  
   @Authorized()
   @Patch('/owners/:id([0-9]+)')
   async updateOwner(

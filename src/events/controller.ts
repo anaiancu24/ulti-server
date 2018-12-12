@@ -10,7 +10,7 @@ export default class EventsController {
     const events = await Event.find({relations: ['games']})
     return { events }
   }
-  
+
   @Get('/events/:id')
   async getEvent(
     @Param('id') id: number
@@ -20,15 +20,18 @@ export default class EventsController {
   }
 
 
+  @Authorized()
 
-  // @Authorized()
   @Post('/events')
   @HttpCode(201)
   async createEvent(
-    // @CurrentUser() currentUser: User,
+    @CurrentUser() currentUser: User,
     @Body() {location, name, startDate, endDate}:Event
   ) {
-      
+    const user = await User.findOne(currentUser.id)
+    const { location, name } = data
+
+    if (user!.account.includes('admin')) {
       const entity = await Event.create({
         name,
         location,
@@ -38,8 +41,10 @@ export default class EventsController {
         teams: null
       }).save()
 
-      return {entity}
+      return { entity }
     }
-}  
+  }
+}
+
 
 

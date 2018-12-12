@@ -8,9 +8,9 @@ export default class TeamController {
   @Get('/teams')
   async allTeams() {
     const teams = await Team.find()
-    return {teams}
+    return { teams }
   }
-  
+
   @Get('/teams/:id')
   async getTeam(
     @Param('id') id: number
@@ -18,7 +18,8 @@ export default class TeamController {
     const team = await Team.findOne(id)
     return { team }
   }
-
+  
+  
  @Authorized()
   @Post('/teams')
   @HttpCode(201)
@@ -30,6 +31,6 @@ export default class TeamController {
       name
     }).save()
 
-    return {entity}
+    return { entity }
   }
 }

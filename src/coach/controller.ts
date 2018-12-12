@@ -11,7 +11,7 @@ export default class CoachController {
     const coaches = await Coach.find()
     return { coaches }
   }
-  
+
   @Get('/coaches/:id')
   async getCoach(
     @Param('id') id: number
@@ -29,7 +29,7 @@ export default class CoachController {
   ) {
     const user = await User.findOne(currentUser.id)
 
-    if (user){
+    if (user) {
       user.account.push('coach')
     }
 
@@ -46,7 +46,7 @@ export default class CoachController {
       socialMedia
     }).save()
 
-    return {entity}
+    return { entity }
   }
 
   @Authorized()
@@ -62,7 +62,7 @@ export default class CoachController {
 
     await updatedCoach.save()
 
-    return {updatedCoach}
+    return { updatedCoach }
   }
 
 
