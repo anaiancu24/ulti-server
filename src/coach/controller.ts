@@ -7,8 +7,8 @@ import User from '../users/entity'
 export default class CoachController {
 
   @Get('/coaches')
-  allCoaches() {
-    const coaches = Coach.find()
+  async allCoaches() {
+    const coaches = await Coach.find()
     return { coaches }
 
   }
