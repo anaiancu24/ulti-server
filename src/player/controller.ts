@@ -37,7 +37,7 @@ export default class PLayerController {
 
     await user!.save()
 
-    const { location, description, team, gender } = data
+    const { location, description, nominatedTeams, gender, socialMedia } = data
 
     const entity = await Player.create({
       rank: null,
@@ -46,9 +46,9 @@ export default class PLayerController {
       description,
       gender,
       isNominated: false,
-      team,
+      nominatedTeams,
       votes: 0,
-      selected: false
+      socialMedia
     }).save()
 
     return {entity}

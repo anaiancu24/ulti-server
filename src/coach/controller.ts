@@ -35,14 +35,15 @@ export default class CoachController {
 
     await user!.save()
 
-    const { description } = data
+    const { description, socialMedia, nominatedTeams } = data
 
     const entity = await Coach.create({
       user,
       description,
-      team: null,
+      nominatedTeams,
       isNominated: false,
-      rank: null
+      rank: null,
+      socialMedia
     }).save()
 
     return {entity}

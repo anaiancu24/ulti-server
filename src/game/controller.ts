@@ -1,6 +1,7 @@
-import { JsonController, Get, Param, Post, HttpCode, Body } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Body, Authorized, CurrentUser } from 'routing-controllers'
 import Game from './entity'
 import Event from '../events/entity'
+import User from '../users/entity'
 
 
 @JsonController()
@@ -21,16 +22,15 @@ export default class GameController {
   }
 
 
-  //@@Authorized()
+  @Authorized()
   @Post('/games')
   @HttpCode(201)
   async createGame(
     //@CurrentUser() currentUser: User,
     @Body() {teams, homeScore, awayScore, date, id}:Game
   ) {
-    //const user = await User.findOne(currentUser.id)
     const event = await Event.findOne(id)
-    //if ( user!.account.includes('admin') ){
+    if ( user!.account.includes('admin') ){
       
     const entity = await Game.create({
       homeScore,
@@ -42,6 +42,6 @@ export default class GameController {
       return { entity }
     }
   }
-// }  
+ }  
 
 

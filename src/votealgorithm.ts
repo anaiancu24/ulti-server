@@ -8,20 +8,40 @@ export const calculateVotingPower = (owner, team) => {
 }
 
 // Voting for a coach
-export const voteCoach = (owner, coach) => {
+export async function voteCoach(owner, coach) {
   if (!owner.votedCoach) {
-    owner.voteCoach = coach
+    owner.votedCoach = coach
     coach.votes += owner.votingPower
+    await owner.save()
   } else {
     console.log(`You have already voted for a coach dude!`)
   }
 }
 
 export const votePlayer = (owner, player) => {
-  if (player.gender === "male" && owner.players.malePlayers.length < 7){
-    owner.players.malePlayers.push(player)
-  } else if (owner.players.femalePlayers.length < 7) {
-    owner.players.femalePlayers.push(player)
+  if (player.location === player.team.location) {
+    if (player.gender === "male" && owner.votedPlayers.malePlayers.length < 7){
+      owner.votedPlayers.malePlayers.push(player)
+    } else if (player.gender === "female" && owner.votedPlayers.femalePlayers.length < 7) {
+      owner.votedPlayers.femalePlayers.push(player)
+    }  
+  } else {
+    if (player.gender === "male" && owner.votedPlayers.outMale.length < 1){
+      owner.votedPlayers.outMale.push(player)
+    } else if (player.gender === "female" && owner.votedPlayers.outFemale.length < 1) {
+      owner.votedPlayers.outFemale.push(player)
+    }  
   }
+}
+
+
+export const updateVotingPower = (team) => {
+  team.owners.map(owner => owner.votingPower = calculateVotingPower(owner, team).save()) 
+}
+
+export const calculateVotes = async (nominee) => {
+
+  const arrPower = await nominee.owners.map(owner => owner.votingPower)
+  nominee.votes = await arrPower.reduce((acc, cur) => acc + cur)
 
 }
