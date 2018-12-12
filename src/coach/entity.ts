@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany, ManyToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Team from '../team/entity'
 import User from '../users/entity'
@@ -39,8 +39,8 @@ export default class Coach extends BaseEntity {
   @Column('integer', {nullable: true})
   rank: number | null
 
-  @ManyToMany(_ => Team, teams => teams.nominatedCoaches) 
-  nominatedTeams: Team[] | null
+  // @ManyToMany(_ => Team, teams => teams.nominatedCoaches) 
+  // nominatedTeams: Team[] | null
 
   @OneToOne(_ => Team, team => team.selectedCoach)
   @JoinColumn()
@@ -50,4 +50,5 @@ export default class Coach extends BaseEntity {
   @OneToMany(_ => Owner, owner => owner.votedCoach)
   @JoinColumn()
   owners: Owner[]
+
 }

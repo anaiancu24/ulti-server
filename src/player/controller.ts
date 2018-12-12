@@ -1,6 +1,6 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Param, Authorized, Body, Patch, NotFoundError } from 'routing-controllers'
 import Player from './entity'
-import User from '../users/entity';
+// import User from '../users/entity';
 
 
 @JsonController()
@@ -8,9 +8,7 @@ export default class PLayerController {
 
   @Get('/players')
   async allPlayers() {
-    const players = await Player.find({
-      relations: ['user', 'team']
-    })
+    const players = await Player.find()
     return { players }
   }
 
@@ -22,42 +20,42 @@ export default class PLayerController {
       where: {
         id
       },
-      relations: ['user', 'team']
+      relations: ['user', 'selectedTeam']
     })
     return { player }
   }
 
-  @Authorized()
-  @Post('/players')
-  @HttpCode(201)
-  async createPlayer(
-    @CurrentUser() currentUser: User,
-    @Body() data: Player
-  ) {
-    const user = await User.findOne(currentUser.id)
+  // @Authorized()
+  // @Post('/players')
+  // @HttpCode(201)
+  // async createPlayer(
+  //   @CurrentUser() currentUser: User,
+  //   @Body() data: Player
+  // ) {
+  //   const user = await User.findOne(currentUser.id)
 
-    if (user) {
-      user.account.push('player')
-    }
+  //   if (user) {
+  //     user.account.push('player')
+  //   }
 
-    await user!.save()
+  //   await user!.save()
 
-    const { location, description, nominatedTeams, gender, socialMedia } = data
+  //   const { location, description, nominatedTeams, gender, socialMedia } = data
 
-    const entity = await Player.create({
-      rank: null,
-      user,
-      location,
-      description,
-      gender,
-      isNominated: false,
-      nominatedTeams,
-      votes: 0,
-      socialMedia
-    }).save()
+  //   const entity = await Player.create({
+  //     rank: null,
+  //     user,
+  //     location,
+  //     description,
+  //     gender,
+  //     isNominated: false,
+  //     nominatedTeams,
+  //     votes: 0,
+  //     socialMedia
+  //   }).save()
 
-    return { entity }
-  }
+  //   return { entity }
+  // }
 
 
   @Authorized()

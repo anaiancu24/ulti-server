@@ -43,7 +43,8 @@ export default () =>
       Team,
       Coach,
       Game,
-      Event       
+      Event,
+             
 
     ],
     synchronize: true,

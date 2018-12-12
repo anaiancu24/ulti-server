@@ -43,11 +43,14 @@ export default class Player extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
-  @ManyToMany(_ => Team, teams => teams.nominatedPlayers) 
+  @ManyToMany(_ => Team, nominatedTeam => nominatedTeam.nominatedPlayers) 
   nominatedTeams: Team[] | null
 
-  @ManyToOne(() => Team, team => team.selectedPlayers)
-  selectedTeam: Team | null
+  // @ManyToOne(_ => Team, team => team.id, {eager: true}) 
+  // nominatedTeams: Team[] | null
+
+  // @ManyToOne(() => Team, selectedTeam => selectedTeam.selectedPlayers, { eager: true })
+  // selectedTeam: Team | null
 
   @Column('integer', {nullable: true})
   votes: number | null
