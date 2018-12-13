@@ -4,7 +4,7 @@ import Owner from './entity'
 import Team from '../team/entity'
 import Coach from '../coach/entity'
 import Player from '../player/entity'
-import {calculateVotingPower, updateVotingPower, voteCoach, votePlayer, calculateVotes} from '../votealgorithm'
+import { reCalculateVotingSystem, voteCoach, votePlayer, calculateVotes} from '../votealgorithm'
 
 
 
@@ -26,7 +26,7 @@ export default class OwnerController {
   }
 
 
-
+  // Create a new Owner when buying shares for a team
   @Authorized()
   @Post('/owners')
   @HttpCode(201)
@@ -40,7 +40,7 @@ export default class OwnerController {
     const team = await Team.findOne(teamId)
 
     if (user) {
-      user.account.push('owner')
+      await user.account.push('owner')
     }
 
     await user!.save()
@@ -51,10 +51,14 @@ export default class OwnerController {
       team,
     }).save()
 
-    team!.totalShares = team!.totalShares + shares
+    team!.totalShares = await team!.totalShares + shares
     await team!.save()
 
-    entity.votingPower = await calculateVotingPower(entity, team)
+    entity.votingPower = await Math.min(entity.shares, 0.4 * team!.totalShares)
+    await entity.save()
+
+    // Re-calculate the voting power of all the owners that have shares in the team
+    reCalculateVotingSystem(team)
 
     return { entity }
   }
@@ -69,16 +73,18 @@ export default class OwnerController {
     const owner = await Owner.findOne(id)
     if (!owner) throw new NotFoundError('Cannot find owner')
 
-    // Check for new shares
+    // Check for new shares and calculate the new total shares of the team
     if (update.shares !== owner.shares) {
       owner.team!.totalShares += await (update.shares! - owner.shares!)
+      owner.team!.save()
     }
 
-    const updatedOwner = await Owner.merge(owner, update)
+    const updatedOwner = await Owner.merge(owner, update).save()
 
-    await updatedOwner.save()
-    updateVotingPower(owner.team)
+    updatedOwner.votingPower = await Math.min(updatedOwner.shares, 0.4 * updatedOwner.team!.totalShares)
 
+    // Re-calculate the voting power of all the owners that have shares in the team
+    reCalculateVotingSystem(updatedOwner.team)
 
     return {updatedOwner}
   }

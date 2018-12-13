@@ -42,17 +42,8 @@ export default class Coach extends BaseEntity {
   @OneToMany(_ => Owner, owner => owner.coach)
   owners: Owner[]
 
-
   @ManyToMany(_ => Team, team => team.nominatedCoaches, {eager: true})
   @JoinTable()
   nominatedTeams: Team[] | null
-
-
-  // @OneToOne(_ => Selected, selectedTeam => selectedTeam.coach, {eager: true})
-  // @JoinColumn()
-  // selectedTeam: Team | null
-
-
-
 
 }

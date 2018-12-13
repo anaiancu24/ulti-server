@@ -33,7 +33,7 @@ export default class UserController {
             }).save()
         }
 
-        // check it out later
+        // Create a new Owner when signing up
         if (account.includes('owner')) {
             await Owner.create({
                 user,

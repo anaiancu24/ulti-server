@@ -15,21 +15,21 @@ export default class Owner extends BaseEntity {
   @JoinColumn()
   user: User
 
-  @ManyToOne(() => Team, team => team.owners, {eager: true}) 
-  team: Team | null
+  @ManyToOne(() => Team, team => team.owners, {eager: true, nullable: true}) 
+  team: Team
 
   @Column('integer', {nullable: true})
-  shares: number | null
+  shares: number
 
   @Column('integer', {nullable: true})
-  votingPower: number | null
+  votingPower: number
 
   // Voting process
   @ManyToOne(() => Coach, coach => coach.owners, {eager: true}) 
-  coach: Coach | null
+  coach: Coach
 
   @ManyToMany(_ => Player, player => player.owners, {eager: true})
   @JoinTable()
-  players: Player[] | null
+  players: Player[]
 
 }

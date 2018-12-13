@@ -1,11 +1,16 @@
-// Voting power calculator
-export const calculateVotingPower = (owner, team) => {
-  const percentage = (owner.shares / team.totalShares) * 100
-  if (percentage >= 40) {
-    return 0.4 * owner.shares
-  }
-  return owner.shares
+import Owner from './owner/entity'
+
+// Re-calculate the voting powers and votes for all players and coaches of the team-owner
+export const reCalculateVotingSystem = async (team) => {
+  const owners = await Owner.find({where:{team: team.Id}})
+  owners.map(async owner => {owner.votingPower = await Math.min(owner.shares, 0.4 * team!.totalShares)
+                              owner.save()
+                            owner.players.map(player => {calculateVotes(player)
+                                                        player.save()})
+                            calculateVotes(owner.coach)
+                            owner.coach.save()})
 }
+
 
 // Voting for a coach
 export async function voteCoach(owner, coach) {
@@ -34,10 +39,6 @@ export const votePlayer = (owner, player) => {
   }
 }
 
-
-export const updateVotingPower = (team) => {
-  team.owners.map(owner => owner.votingPower = calculateVotingPower(owner, team).save()) 
-}
 
 export const calculateVotes = async (nominee) => {
 
