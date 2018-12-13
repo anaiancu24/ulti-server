@@ -6,7 +6,7 @@ import Player from '../player/entity'
 import Coach from '../coach/entity'
 import Owner from '../owner/entity'
 
-type Account = 'player' | 'coach' | 'owner' | 'member' | 'admin'
+type Account = 'player' | 'coach' | 'owner' | 'member'
 
 @Entity()
 export default class User extends BaseEntity {
@@ -30,6 +30,9 @@ export default class User extends BaseEntity {
 
   @Column('simple-array')
   account: Account[]
+
+  @Column('boolean', {nullable: true})
+  isAdmin: boolean
 
   @IsString()
   @MinLength(8)

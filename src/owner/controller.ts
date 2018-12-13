@@ -51,10 +51,10 @@ export default class OwnerController {
       team,
     }).save()
 
-    team!.totalShares = await team!.totalShares + shares
+    team!.totalShares = await (Number(team!.totalShares) + Number(shares))
     await team!.save()
 
-    entity.votingPower = await Math.min(entity.shares, 0.4 * team!.totalShares)
+    entity.votingPower = await Math.min(Number(entity.shares), 0.4 * Number(team!.totalShares))
     await entity.save()
 
     // Re-calculate the voting power of all the owners that have shares in the team
@@ -64,6 +64,7 @@ export default class OwnerController {
   }
 
   
+  // When buying more shares
   @Authorized()
   @Patch('/owners/:id([0-9]+)')
   async updateOwner(
@@ -73,20 +74,19 @@ export default class OwnerController {
     const owner = await Owner.findOne(id)
     if (!owner) throw new NotFoundError('Cannot find owner')
 
-    // Check for new shares and calculate the new total shares of the team
-    if (update.shares !== owner.shares) {
-      owner.team!.totalShares += await (update.shares! - owner.shares!)
-      owner.team!.save()
-    }
+    owner.team!.totalShares += await Number(update.shares!)
+    await owner.team!.save()
 
-    const updatedOwner = await Owner.merge(owner, update).save()
+    owner.shares += await Number(update.shares!)
+    await owner.save()
 
-    updatedOwner.votingPower = await Math.min(updatedOwner.shares, 0.4 * updatedOwner.team!.totalShares)
+
+    owner.votingPower = await Math.min(Number(owner.shares), 0.4 * Number(owner.team!.totalShares))
 
     // Re-calculate the voting power of all the owners that have shares in the team
-    reCalculateVotingSystem(updatedOwner.team)
+    reCalculateVotingSystem(owner.team)
 
-    return {updatedOwner}
+    return {owner}
   }
 
 
@@ -94,7 +94,7 @@ export default class OwnerController {
   @Patch('/owners/:id([0-9]+)/votecoach')
   async ownerVoteCoach(
     @Param('id') id: number,
-    @Body() update: Coach
+    @Body() update: Partial<Coach>
   ) {
     const owner = await Owner.findOne(id)
     if (!owner) throw new NotFoundError('Cannot find owner')

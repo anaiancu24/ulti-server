@@ -14,9 +14,9 @@ export const reCalculateVotingSystem = async (team) => {
 
 // Voting for a coach
 export async function voteCoach(owner, coach) {
-  if (!owner.votedCoach) {
-    owner.votedCoach = coach
-    coach.votes += owner.votingPower
+  if (!owner.coach) {
+    owner.coach = coach
+    owner.coach.votes += owner.votingPower
     await owner.save()
   } else {
     console.log(`You have already voted for a coach dude!`)

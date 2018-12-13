@@ -13,8 +13,13 @@ export default class UserController {
         @Body() data: User
     ) {
         const { account } = data
-        const { password, ...rest } = data
-        const entity = User.create(rest)
+        const { password, firstName, lastName, email } = data
+        const entity = User.create({
+            firstName,
+            lastName,
+            email,
+            isAdmin: false
+            })
         await entity.setPassword(password)
         const user = await entity.save()
 
@@ -36,7 +41,8 @@ export default class UserController {
         // Create a new Owner when signing up
         if (account.includes('owner')) {
             await Owner.create({
-                user,
+                user, 
+                shares: 0
             }).save()
         }
 

@@ -20,7 +20,7 @@ export default class Team extends BaseEntity {
   @Column('text', {nullable:true})
   location: string
 
-  @Column('integer', { nullable: true })
+  @Column('integer')
   totalShares: number
 
   @OneToMany(_ => Owner, owner => owner.team)
@@ -29,7 +29,7 @@ export default class Team extends BaseEntity {
   @ManyToMany(_ => Coach, coach => coach.nominatedTeams)
   nominatedCoaches: Coach[] | null
 
-  @ManyToMany(_ => Player, player => player.nominatedTeams)
+  @ManyToMany(_ => Player, player => player.nominatedTeams, {eager: true})
   @JoinTable()
   nominatedPlayers: Coach[] | null
 

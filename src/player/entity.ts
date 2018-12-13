@@ -4,8 +4,8 @@ import User from '../users/entity'
 import Owner from '../owner/entity'
 import Team from '../team/entity'
 
-type Votes = {
-  team: Team,
+export type Votes = {
+  team: string,
   numberOfVotes: number
 }
 
@@ -48,8 +48,8 @@ export default class Player extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
-  @Column('integer', {nullable: true})
-  votes: Votes | null
+  @Column('simple-array', {nullable: true})
+  votes: Votes[] | null
 
   @Column('integer', {nullable: true})
   rank: number | null
@@ -57,7 +57,7 @@ export default class Player extends BaseEntity {
   @ManyToMany(() => Owner, owner => owner.players)
   owners: Owner[] | null
 
-  @ManyToMany(() => Team, team => team.nominatedPlayers, {eager: true})
+  @ManyToMany(() => Team, team => team.nominatedPlayers)
   nominatedTeams: Team[] | null
 
 }

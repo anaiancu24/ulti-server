@@ -28,7 +28,8 @@ export default class TeamController {
   ) {
 
     const entity = await Team.create({
-      name
+      name,
+      totalShares: 0
     }).save()
 
     return { entity }

@@ -3,6 +3,7 @@ import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Owner from '../owner/entity'
 import Team from '../team/entity'
+import {Votes} from '../player/entity'
 
 
 type SocialMedia = {
@@ -33,8 +34,8 @@ export default class Coach extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
-  @Column('integer', {nullable: true})
-  votes: number | null
+  @Column('simple-array', {nullable: true})
+  votes: Votes[] | null
 
   @Column('integer', {nullable: true})
   rank: number | null
