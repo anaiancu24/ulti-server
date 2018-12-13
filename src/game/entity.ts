@@ -1,7 +1,7 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable} from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm'
 import { IsString } from 'class-validator'
 import Event from '../events/entity'
-import Team from '../team/entity'
+// import Team from '../team/entity'
 
 @Entity()
 export default class Game extends BaseEntity {
@@ -26,9 +26,9 @@ export default class Game extends BaseEntity {
   // @Column('json')
   // report: JSON
 
-  @ManyToMany(_ => Team, team => team.games)
-  @JoinTable()
-  teams: Team[] 
+  // @ManyToMany(_ => Team, team => team.games)
+  // @JoinTable()
+  // teams: Team[] 
 
   @ManyToOne(() => Event, event => event.games)
   event: Event | null

@@ -1,9 +1,9 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
-import Team from '../team/entity'
+// import Team from '../team/entity'
 import User from '../users/entity'
 import Owner from '../owner/entity';
-import Selected from '../selected/entity';
+// import Selected from '../selected/entity';
 
 
 type SocialMedia = {
@@ -40,16 +40,20 @@ export default class Coach extends BaseEntity {
   @Column('integer', {nullable: true})
   rank: number | null
 
+  @OneToMany(_ => Owner, owner => owner.coach)
+  owners: Owner[]
+
+
+
+
   // @ManyToMany(_ => Team, teams => teams.nominatedCoaches) 
   // nominatedTeams: Team[] | null
 
-  @OneToOne(_ => Selected, selectedTeam => selectedTeam.coach, {eager: true})
-  @JoinColumn()
-  selectedTeam: Team | null
+  // @OneToOne(_ => Selected, selectedTeam => selectedTeam.coach, {eager: true})
+  // @JoinColumn()
+  // selectedTeam: Team | null
 
 
-  @OneToMany(_ => Owner, owner => owner.votedCoach)
-  @JoinColumn()
-  owners: Owner[]
+
 
 }

@@ -9,7 +9,7 @@ import Team from './team/entity'
 import Coach from './coach/entity'
 import Game from './game/entity'
 import Event from './events/entity'
-import Selected from './selected/entity'
+// import Selected from './selected/entity'
 
 
 
@@ -45,7 +45,7 @@ export default () =>
       Coach,
       Game,
       Event,
-      Selected
+      
 
     ],
     synchronize: true,

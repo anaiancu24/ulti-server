@@ -1,6 +1,6 @@
-import { JsonController, Get, Param, Post, HttpCode, Body, Authorized } from 'routing-controllers'
+import { JsonController, Get, Param} from 'routing-controllers'
 import Game from './entity'
-import Event from '../events/entity'
+// import Event from '../events/entity'
 
 
 @JsonController()
@@ -21,28 +21,28 @@ export default class GameController {
   }
 
 
-  @Authorized()
-  @Post('/games')
-  @HttpCode(201)
-  async createGame(
-    // @CurrentUser() currentUser: User,
-    @Body() {teams, homeScore, awayScore, date, id}:Game
-  ) {
+  // @Authorized()
+  // @Post('/games')
+  // @HttpCode(201)
+  // async createGame(
+  //   // @CurrentUser() currentUser: User,
+  //   @Body() {teams, homeScore, awayScore, date, id}:Game
+  // ) {
 
-    const event = await Event.findOne(id)
-
-
-    const entity = await Game.create({
-      homeScore,
-      awayScore,
-      event,
-      teams,
-      date
-    }).save()
+  //   const event = await Event.findOne(id)
 
 
-    return { entity }
-    }
+  //   const entity = await Game.create({
+  //     homeScore,
+  //     awayScore,
+  //     event,
+  //     teams,
+  //     date
+  //   }).save()
+
+
+  //   return { entity }
+  //   }
 }
 
 

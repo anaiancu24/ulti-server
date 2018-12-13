@@ -43,7 +43,7 @@ export default class User extends BaseEntity {
   @OneToOne(_ => Coach, coach => coach.user)
   coach: Coach
 
-  @OneToOne(_ => Owner, owner => owner.user)
+  @OneToOne(_ => Owner, owner => owner.user, {eager: true})
   owner: Owner
 
   async setPassword(rawPassword: string) {
