@@ -8,7 +8,7 @@ export default class PLayerController {
 
   @Get('/players')
   async allPlayers() {
-    const players = await Player.find()
+    const players = await Player.find({ relations: ['selectedTeam'] })
     return { players }
   }
 
@@ -20,7 +20,7 @@ export default class PLayerController {
       where: {
         id
       },
-      relations: ['user', 'selectedTeam']
+      relations: ['selectedTeam']
     })
     return { player }
   }

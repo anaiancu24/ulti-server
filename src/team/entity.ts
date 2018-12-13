@@ -20,7 +20,7 @@ export default class Team extends BaseEntity {
 
   @IsString()
   @MinLength(2)
-  @Column('text', {nullable:true})
+  @Column('text', { nullable: true })
   location: string
 
   @Column('integer', { nullable: true })
@@ -37,15 +37,14 @@ export default class Team extends BaseEntity {
   @JoinColumn()
   selectedPlayers: Player[] | null
 
-
   @OneToMany(_ => Owner, owner => owner.team)
   @JoinTable()
-  owners: Owner[] 
+  owners: Owner[]
 
   @ManyToMany(_ => Game, game => game.teams)
   games: Game[]
 
-  @OneToOne(() => Selected, selectedTeam => selectedTeam.team, {eager: true})
+  @OneToOne(() => Selected, selectedTeam => selectedTeam.team)
   selectedTeam: Selected | null
 
 

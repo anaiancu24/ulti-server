@@ -10,7 +10,7 @@ export default class Selected extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @OneToOne(() => Team, team => team.selectedTeam)
+  @OneToOne(() => Team, team => team.selectedTeam, { eager: true })
   @JoinColumn()
   team: Team | null
 

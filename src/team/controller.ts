@@ -7,7 +7,7 @@ export default class TeamController {
 
   @Get('/teams')
   async allTeams() {
-    const teams = await Team.find()
+    const teams = await Team.find({ relations: ['selectedCoach', 'selectedPlayers']})
     return { teams }
   }
 
