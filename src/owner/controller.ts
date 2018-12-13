@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Param, Post, Authorized, Body, Patch, NotFoundError, BadRequestError } from 'routing-controllers'
 import User from '../users/entity'
 import Owner from './entity'
 import Team from '../team/entity'
@@ -14,6 +14,7 @@ export default class OwnerController {
   @Get('/owners')
   async allOwners() {
     const owners = await Owner.find()
+    if(!owners) {BadRequestError}
     return { owners }
   }
 
@@ -27,16 +28,16 @@ export default class OwnerController {
 
 
 
-  @Authorized()
+  // @Authorized()
   @Post('/owners')
-  @HttpCode(201)
+  // @HttpCode(201)
   async createOwner(
-    @CurrentUser() currentUser: User,
+    // @CurrentUser() currentUser: User,
     @Body() data
   ) {
-    const { shares, teamId } = data
+    const { shares, teamId, id } = data
 
-    const user = await User.findOne(currentUser.id)
+    const user = await User.findOne(id)
     const team = await Team.findOne(teamId)
 
     if (user) {

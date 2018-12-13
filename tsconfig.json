@@ -20,7 +20,7 @@
     "rootDir": "src/"
   },
   "include": [
-    "src/**/*", "../ulti-league-rwp-client/src/actions/owners.js", "../ulti-league-rwp-client/src/components/Owners/OwnerProfileContainer.js", "../ulti-league-rwp-client/src/components/Owners/OwnersOverview.js", "../ulti-league-rwp-client/src/components/Owners/OwnersOverviewContainer.js", "../ulti-league-rwp-client/src/components/Owners/OwnerProfile.js", "../ulti-league-rwp-client/src/reducers/owners.js",
+    "src/**/*", "../ulti-league-rwp-client/src/actions/owners.js", "../ulti-league-rwp-client/src/components/Owners/OwnerProfileContainer.js", "../ulti-league-rwp-client/src/components/Owners/OwnersOverview.js", "../ulti-league-rwp-client/src/components/Owners/OwnersOverviewContainer.js", "../ulti-league-rwp-client/src/components/Owners/OwnerProfile.js", "../ulti-league-rwp-client/src/reducers/owners.js", "../ulti-league-rwp-client/src/components/becomeOwner/BecomeOwnerContainer.js", "../ulti-league-rwp-client/src/components/yourteam/YourTeamContainer.js", "../ulti-league-rwp-client/src/components/becomeOwner/becomeOwnerContainer.js", "../ulti-league-rwp-client/src/components/buyshares/.js", "../ulti-league-rwp-client/src/components/league/LeagueContainer.js", "../ulti-league-rwp-client/src/components/league/LeagueOverviewContainer.js", "../ulti-league-rwp-client/src/components/league/leagueOverviewContainer.js", "../ulti-league-rwp-client/src/components/yourteam/yourTeamContainer.js", "../ulti-league-rwp-client/src/actions/events.js",
   ],
   "exclude": [
     "node_modules",
