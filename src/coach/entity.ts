@@ -1,9 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, JoinTable, OneToOne, Column, OneToMany, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
-// import Team from '../team/entity'
 import User from '../users/entity'
-import Owner from '../owner/entity';
-// import Selected from '../selected/entity';
+import Owner from '../owner/entity'
+import Team from '../team/entity'
 
 
 type SocialMedia = {
@@ -18,7 +17,7 @@ export default class Coach extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @OneToOne(_ => User, user => user.coach)
+  @OneToOne(_ => User, user => user.coach, {eager: true})
   @JoinColumn()
   user: User
 
@@ -44,10 +43,10 @@ export default class Coach extends BaseEntity {
   owners: Owner[]
 
 
+  @ManyToMany(_ => Team, team => team.nominatedCoaches, {eager: true})
+  @JoinTable()
+  nominatedTeams: Team[] | null
 
-
-  // @ManyToMany(_ => Team, teams => teams.nominatedCoaches) 
-  // nominatedTeams: Team[] | null
 
   // @OneToOne(_ => Selected, selectedTeam => selectedTeam.coach, {eager: true})
   // @JoinColumn()

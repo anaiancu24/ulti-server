@@ -37,15 +37,6 @@ export default class User extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   password: string
 
-  @OneToOne(_ => Player, player => player.user)
-  player: Player
-
-  @OneToOne(_ => Coach, coach => coach.user)
-  coach: Coach
-
-  @OneToOne(_ => Owner, owner => owner.user, {eager: true})
-  owner: Owner
-
   async setPassword(rawPassword: string) {
     const hash = await bcrypt.hash(rawPassword, 10)
     this.password = hash
@@ -54,4 +45,15 @@ export default class User extends BaseEntity {
   checkPassword(rawPassword: string): Promise<boolean> {
     return bcrypt.compare(rawPassword, this.password)
   }
+
+
+  @OneToOne(_ => Owner, owner => owner.user)
+  owner: Owner
+
+  @OneToOne(_ => Coach, coach => coach.user)
+  coach: Coach
+
+  @OneToOne(_ => Player, player => player.user)
+  player: Player
+
 }

@@ -16,12 +16,7 @@ export default class PLayerController {
   async getPlayer(
     @Param('id') id: number
   ) {
-    const player = await Player.findOne({
-      where: {
-        id
-      },
-      relations: ['user', 'selectedTeam']
-    })
+    const player = await Player.findOne(id)
     return { player }
   }
 

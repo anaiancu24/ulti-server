@@ -1,10 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinTable, OneToMany, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
-// import Coach from '../coach/entity'
 import Owner from '../owner/entity'
-// import Game from '../game/entity'
-// import Selected from '../selected/entity';
-
+import Coach from '../coach/entity'
+import Player from '../player/entity'
 
 @Entity()
 export default class Team extends BaseEntity {
@@ -28,34 +26,11 @@ export default class Team extends BaseEntity {
   @OneToMany(_ => Owner, owner => owner.team)
   owners: Owner[]
 
+  @ManyToMany(_ => Coach, coach => coach.nominatedTeams)
+  nominatedCoaches: Coach[] | null
 
-
-
-
-
-
-
-
-
-
-
-
-  // @ManyToMany(_ => Player, nominatedPlayer => nominatedPlayer.nominatedTeams, { eager: true })
-  // @JoinTable()
-  // nominatedPlayers: Player[] | null
-
-  // @OneToOne(() => Coach, coach => coach.selectedTeam)
-  // selectedCoach: Coach | null
-
-  // // @OneToMany(() => Player, player => player.selectedTeam)
-  // // @JoinColumn()
-  // // selectedPlayers: Player[] | null
-
-  // @ManyToMany(_ => Game, game => game.teams)
-  // games: Game[]
-
-  // @OneToOne(() => Selected, selectedTeam => selectedTeam.team, {eager: true})
-  // selectedTeam: Selected | null
-
+  @ManyToMany(_ => Player, player => player.nominatedTeams)
+  @JoinTable()
+  nominatedPlayers: Coach[] | null
 
 }

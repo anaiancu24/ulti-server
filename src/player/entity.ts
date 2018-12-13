@@ -1,9 +1,13 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
-// import Team from '../team/entity'
 import Owner from '../owner/entity'
-// import Selected from '../selected/entity'
+import Team from '../team/entity'
+
+type Votes = {
+  team: Team,
+  numberOfVotes: number
+}
 
 type Gender = "female" | "male"
 
@@ -19,7 +23,7 @@ export default class Player extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @OneToOne(_ => User, user => user.player)
+  @OneToOne(_ => User, user => user.player, { eager: true})
   @JoinColumn()
   user: User
 
@@ -44,33 +48,16 @@ export default class Player extends BaseEntity {
   @Column('boolean', {nullable: true})
   isNominated: boolean
 
+  @Column('integer', {nullable: true})
+  votes: Votes | null
+
+  @Column('integer', {nullable: true})
+  rank: number | null
+
   @ManyToMany(() => Owner, owner => owner.players)
-  // @JoinTable() 
   owners: Owner[] | null
 
+  @ManyToMany(() => Team, team => team.nominatedPlayers, {eager: true})
+  nominatedTeams: Team[] | null
 
-
-
-
-
-
-
-
-
-  // @ManyToMany(_ => Team, nominatedTeam => nominatedTeam.nominatedPlayers) 
-  // nominatedTeams: Team[] | null
-
-  // @Column('integer', {nullable: true})
-  // votes: number | null
-
-  // @Column('integer', {nullable: true})
-  // rank: number | null
-
-
-
-  // @ManyToOne(() => Selected, selectedTeam => selectedTeam.players)
-  // selectedTeam: Selected | null
-
-
-  
 }
