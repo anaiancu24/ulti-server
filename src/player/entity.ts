@@ -5,7 +5,7 @@ import Owner from '../owner/entity'
 import Team from '../team/entity'
 
 export type Votes = {
-  team: string,
+  teamName: Team | undefined
   numberOfVotes: number
 }
 
@@ -46,7 +46,7 @@ export default class Player extends BaseEntity {
   socialMedia: SocialMedia
 
   @Column('boolean', {nullable: true})
-  isNominated: boolean
+  hasPaid: boolean
 
   @Column('simple-array', {nullable: true})
   votes: Votes[] | null

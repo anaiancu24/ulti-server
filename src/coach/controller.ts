@@ -1,6 +1,6 @@
-import { JsonController, Get, Param, Authorized, Body, Patch, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Post, Param, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
 import Coach from './entity'
-// import User from '../users/entity'
+import User from '../users/entity'
 
 
 @JsonController()
@@ -20,34 +20,35 @@ export default class CoachController {
     return { coach }
   }
 
-  // @Authorized()
-  // @Post('/coaches')
-  // @HttpCode(201)
-  // async createCoach(
-  //   @CurrentUser() currentUser: User,
-  //   @Body() data: Coach
-  // ) {
-  //   const user = await User.findOne(currentUser.id)
+  @Authorized()
+  @Post('/coaches')
+  @HttpCode(201)
+  async createCoach(
+    @CurrentUser() currentUser: User,
+    @Body() data: Coach
+  ) {
+    const user = await User.findOne(currentUser.id)
 
-  //   if (user) {
-  //     user.account.push('coach')
-  //   }
+    if (user) {
+      user.account.push('coach')
+    }
 
-  //   await user!.save()
+    await user!.save()
 
-  //   const { description, socialMedia, nominatedTeams } = data
+    const { description } = data
 
-  //   const entity = await Coach.create({
-  //     user,
-  //     description,
-  //     nominatedTeams,
-  //     isNominated: false,
-  //     rank: null,
-  //     socialMedia
-  //   }).save()
+    const entity = await Coach.create({
+      user,
+      description,
+      nominatedTeams: [],
+      hasPaid: false,
+      rank: 0,
+      socialMedia: null,
+      votes: null
+    }).save()
 
-  //   return { entity }
-  // }
+    return { entity }
+  }
 
   @Authorized()
   @Patch('/coaches/:id([0-9]+)')

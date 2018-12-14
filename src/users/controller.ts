@@ -12,13 +12,13 @@ export default class UserController {
     async createUser(
         @Body() data: User
     ) {
-        const { account } = data
-        const { password, firstName, lastName, email } = data
+        const { password, firstName, lastName, email, account } = data
         const entity = User.create({
             firstName,
             lastName,
             email,
-            isAdmin: false
+            isAdmin: false,
+            account
             })
         await entity.setPassword(password)
         const user = await entity.save()
@@ -27,14 +27,16 @@ export default class UserController {
             await Player.create({
                 user,
                 location: "",
-                description: ""
+                description: "",
+                votes: []
             }).save()
         }
 
         if (account.includes('coach')) {
             await Coach.create({
                 user,
-                description: ""
+                description: "",
+                votes: null
             }).save()
         }
 
@@ -42,7 +44,8 @@ export default class UserController {
         if (account.includes('owner')) {
             await Owner.create({
                 user, 
-                shares: 0
+                shares: 0,
+                votingPower: 0
             }).save()
         }
 

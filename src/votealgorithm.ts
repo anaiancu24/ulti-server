@@ -16,8 +16,21 @@ export const reCalculateVotingSystem = async (team) => {
 export async function voteCoach(owner, coach) {
   if (!owner.coach) {
     owner.coach = coach
-    owner.coach.votes += owner.votingPower
-    await owner.save()
+
+    // const vote = coach.votes.filter(vote => vote.teamName === team.name)[0]
+
+    console.log(owner.coach.votes)
+    // if (vote) {
+    //   vote.numberOfVotes += owner.votingPower
+    //   await coach.save()
+    // } else {
+    //   const addedVote = await {
+    //     teamName: team.name,
+    //     numberOfVotes: owner.votingPower
+    //   }
+    //   await coach.votes.push(addedVote)
+    //   await coach.save()
+    // }
   } else {
     console.log(`You have already voted for a coach dude!`)
   }

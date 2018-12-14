@@ -4,7 +4,7 @@ import Owner from './entity'
 import Team from '../team/entity'
 import Coach from '../coach/entity'
 import Player from '../player/entity'
-import { reCalculateVotingSystem, voteCoach, votePlayer, calculateVotes} from '../votealgorithm'
+import { reCalculateVotingSystem, votePlayer, calculateVotes} from '../votealgorithm'
 
 
 
@@ -101,11 +101,22 @@ export default class OwnerController {
 
     const coach = await Coach.findOne(update.id)
 
-    voteCoach(owner, coach)
+    owner!.coach = coach!
+    owner.save()
 
-    calculateVotes(coach)
+    coach!.votes! = {teamName: owner.team,
+                    numberOfVotes: owner.votingPower}
+    coach!.save()
 
-    return {coach}
+
+
+
+
+    // voteCoach(owner, coach)
+
+    // calculateVotes(coach)
+
+    return {owner}
   }
 
 

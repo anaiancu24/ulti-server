@@ -28,14 +28,14 @@ export default class Coach extends BaseEntity {
   description: string
 
   @Column('text', {nullable: true})
-  socialMedia: SocialMedia
+  socialMedia: SocialMedia | null
 
   
   @Column('boolean', {nullable: true})
-  isNominated: boolean
+  hasPaid: boolean
 
-  @Column('simple-array', {nullable: true})
-  votes: Votes[] | null
+  @Column('json', {nullable: true})
+  votes: Votes | null
 
   @Column('integer', {nullable: true})
   rank: number | null
