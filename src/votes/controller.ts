@@ -1,5 +1,6 @@
-import { JsonController, Get, Param } from 'routing-controllers'
+import { JsonController, Get, Param, NotFoundError } from 'routing-controllers'
 import { CoachVote, PlayerVote } from './entity'
+import Team from '../team/entity';
 
 
 @JsonController()
@@ -19,16 +20,16 @@ export class CoachVoteController {
     return { coachVote }
   }
 
-
-  @Get('/coachvotesbyteam/:id')
-  async getCoachVoteByTeam(
+  @Get('/coachesvotedforteam/:id')
+  async getCoachesVotedforTeam(
     @Param('id') id: number
   ) {
-    const coachVoteByTeam = await CoachVote.find({where: {teamId: id}})
-    return { coachVoteByTeam }
-  }
-  
+    const team = await Team.findOne(id)
+    if (!team) throw new NotFoundError(`This team doesn't exist!`)
 
+    const coaches = await team.nominatedCoaches
+    return { coaches }
+  }
 }
 
 @JsonController()
@@ -40,7 +41,7 @@ export class PlayerVoteController {
     return { playerVotes }
   }
 
-  @Get('/coachvotes/:id')
+  @Get('/playervotes/:id')
   async getPlayerVote(
     @Param('id') id: number
   ) {
@@ -48,14 +49,14 @@ export class PlayerVoteController {
     return { playerVote }
   }
 
-
-  @Get('/playervotesbyteam/:id')
-  async getPlayerVoteByTeam(
+  @Get('/playersvotedforteam/:id')
+  async getPlayersVotedforTeam(
     @Param('id') id: number
   ) {
-    const playerVoteByTeam = await PlayerVote.find({where: {teamId: id}})
-    return { playerVoteByTeam }
-  }
-  
+    const team = await Team.findOne(id)
+    if (!team) throw new NotFoundError(`This team doesn't exist!`)
 
+    const players = await team.nominatedPlayers
+    return { players }
+  }
 }

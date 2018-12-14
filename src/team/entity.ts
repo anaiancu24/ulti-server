@@ -26,10 +26,9 @@ export default class Team extends BaseEntity {
   @OneToMany(_ => Owner, owner => owner.team)
   owners: Owner[]
 
-  @ManyToMany(_ => Coach, coach => coach.nominatedTeams)
+  @ManyToMany(_ => Coach, coach => coach.nominatedTeams, {lazy: true})
   nominatedCoaches: Coach[] | null
 
-  @ManyToMany(_ => Player, player => player.nominatedTeams)
+  @ManyToMany(_ => Player, player => player.nominatedTeams, {lazy: true})
   nominatedPlayers: Player[] | null
-
 }

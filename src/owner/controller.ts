@@ -101,10 +101,10 @@ export default class OwnerController {
   // When voting for a Coach
   @Authorized() 
   @Patch('/owners/:id([0-9]+)/votecoach')
-  async ownerPlayerCoach(
+  async ownervoteCoach(
     @CurrentUser() currentUser: User,
     @Param('id') id: number,
-    @Body() update: Partial<Player>
+    @Body() update: Partial<Coach>
   ) {
     const owner = await Owner.findOne(id)
     if (!currentUser.account.includes('owner')) {
@@ -116,23 +116,25 @@ export default class OwnerController {
     const coach = await Coach.findOne(update.id)
     if (!coach) throw new NotFoundError('Cannot find coach')
 
+    if (!coach.hasPaid) {
 
-    const vote = await CoachVote.create({
-      coachId: coach!.id,
-      ownerId: id,
-      teamId: owner.team.id,
-      votes: owner.votingPower
-    }).save()
-
-    owner.coach = coach
-    owner.save()
-    
-    if (!coach.nominatedTeams!.includes(owner.team)) {
-      coach.nominatedTeams!.push(owner.team)
-      coach.save()
+      const vote = await CoachVote.create({
+        coachId: coach!.id,
+        ownerId: id,
+        teamId: owner.team.id,
+        votes: owner.votingPower
+      }).save()
+  
+      owner.coach = coach
+      owner.save()
+      
+      if (!coach.nominatedTeams!.includes(owner.team)) {
+        coach.nominatedTeams!.push(owner.team)
+        coach.save()
+      }
+      
+      return {vote}
     }
-    
-    return {vote}
   }
 
 
@@ -153,21 +155,24 @@ export default class OwnerController {
     const player = await Player.findOne(update.id)
     if (!player) throw new NotFoundError('Cannot find player')
 
-    const vote = await PlayerVote.create({
-      playerId: player!.id,
-      ownerId: id,
-      teamId: owner.team.id,
-      votes: owner.votingPower
-    }).save()
+    if (!player.hasPaid) {
 
-    owner.players.push(player)
-    owner.save()
-    
-    if (!player.nominatedTeams!.includes(owner.team)) {
-      player.nominatedTeams!.push(owner.team)
-      player.save()
+      const vote = await PlayerVote.create({
+        playerId: player!.id,
+        ownerId: id,
+        teamId: owner.team.id,
+        votes: owner.votingPower
+      }).save()
+
+      owner.players.push(player)
+      owner.save()
+      
+      if (!player.nominatedTeams!.includes(owner.team)) {
+        player.nominatedTeams!.push(owner.team)
+        player.save()
+      }
+      
+      return {vote}
     }
-    
-    return {vote}
   }
 }
