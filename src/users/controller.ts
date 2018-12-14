@@ -28,7 +28,8 @@ export default class UserController {
                 user,
                 location: "",
                 description: "",
-                votes: []
+                nominatedTeams: [],
+                hasPaid: false
             }).save()
         }
 
@@ -36,7 +37,7 @@ export default class UserController {
             await Coach.create({
                 user,
                 description: "",
-                votes: null
+                hasPaid: false
             }).save()
         }
 

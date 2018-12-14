@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Owner from '../owner/entity'
@@ -43,21 +43,19 @@ export default class Player extends BaseEntity {
   description: string
 
   @Column('text', {nullable: true})
-  socialMedia: SocialMedia
+  socialMedia: SocialMedia | null
+
+  @Column('text', {nullable: true})
+  pictureURL: string | null
 
   @Column('boolean', {nullable: true})
   hasPaid: boolean
 
-  @Column('simple-array', {nullable: true})
-  votes: Votes[] | null
-
-  @Column('integer', {nullable: true})
-  rank: number | null
-
   @ManyToMany(() => Owner, owner => owner.players)
   owners: Owner[] | null
 
-  @ManyToMany(() => Team, team => team.nominatedPlayers)
+  @ManyToMany(() => Team, team => team.nominatedPlayers, {eager: true})
+  @JoinTable()
   nominatedTeams: Team[] | null
 
 }

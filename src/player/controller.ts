@@ -1,6 +1,6 @@
-import { JsonController, Get, Param, Authorized, Body, Patch, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Param, Authorized, Body, Patch, NotFoundError, Post, HttpCode, CurrentUser } from 'routing-controllers'
 import Player from './entity'
-// import User from '../users/entity';
+import User from '../users/entity'
 
 
 @JsonController()
@@ -20,37 +20,38 @@ export default class PLayerController {
     return { player }
   }
 
-  // @Authorized()
-  // @Post('/players')
-  // @HttpCode(201)
-  // async createPlayer(
-  //   @CurrentUser() currentUser: User,
-  //   @Body() data: Player
-  // ) {
-  //   const user = await User.findOne(currentUser.id)
 
-  //   if (user) {
-  //     user.account.push('player')
-  //   }
+  // Create a new Player
+  @Authorized()
+  @Post('/players')
+  @HttpCode(201)
+  async createCoach(
+    @CurrentUser() currentUser: User,
+    @Body() data: Partial<Player>
+  ) {
+    const user = await User.findOne(currentUser.id)
 
-  //   await user!.save()
+    if (user) {
+      user.account.push('player')
+    }
 
-  //   const { location, description, nominatedTeams, gender, socialMedia } = data
+    await user!.save()
 
-  //   const entity = await Player.create({
-  //     rank: null,
-  //     user,
-  //     location,
-  //     description,
-  //     gender,
-  //     isNominated: false,
-  //     nominatedTeams,
-  //     votes: 0,
-  //     socialMedia
-  //   }).save()
+    const { description, location, gender, pictureURL } = data
 
-  //   return { entity }
-  // }
+    const entity = await Player.create({
+      user,
+      description,
+      location,
+      gender,
+      socialMedia: null,
+      pictureURL,
+      nominatedTeams: [],
+      hasPaid: false,
+    }).save()
+
+    return { entity }
+  }
 
 
   @Authorized()

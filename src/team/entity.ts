@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinTable, OneToMany, ManyToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Owner from '../owner/entity'
 import Coach from '../coach/entity'
@@ -29,8 +29,7 @@ export default class Team extends BaseEntity {
   @ManyToMany(_ => Coach, coach => coach.nominatedTeams)
   nominatedCoaches: Coach[] | null
 
-  @ManyToMany(_ => Player, player => player.nominatedTeams, {eager: true})
-  @JoinTable()
-  nominatedPlayers: Coach[] | null
+  @ManyToMany(_ => Player, player => player.nominatedTeams)
+  nominatedPlayers: Player[] | null
 
 }

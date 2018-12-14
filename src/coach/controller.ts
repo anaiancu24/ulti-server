@@ -42,9 +42,7 @@ export default class CoachController {
       description,
       nominatedTeams: [],
       hasPaid: false,
-      rank: 0,
       socialMedia: null,
-      votes: null
     }).save()
 
     return { entity }

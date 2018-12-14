@@ -9,6 +9,7 @@ import Team from './team/entity'
 import Coach from './coach/entity'
 import Game from './game/entity'
 import Event from './events/entity'
+import { CoachVote, PlayerVote } from './votes/entity'
 
 
 
@@ -35,7 +36,7 @@ class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrate
 export default () =>
   createConnection({
     type: "postgres",
-    url: process.env.DATABASE_URL || 'postgres://postgres:test1234@localhost:5432/postgres',
+    url: process.env.DATABASE_URL || 'postgres://postgres:test123@localhost:5432/postgres',
     entities: [
       User,
       Player,
@@ -44,6 +45,8 @@ export default () =>
       Coach,
       Game,
       Event,
+      CoachVote,
+      PlayerVote
       
 
     ],

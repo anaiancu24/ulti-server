@@ -3,7 +3,6 @@ import { MinLength, IsString } from 'class-validator'
 import User from '../users/entity'
 import Owner from '../owner/entity'
 import Team from '../team/entity'
-import {Votes} from '../player/entity'
 
 
 type SocialMedia = {
@@ -30,15 +29,11 @@ export default class Coach extends BaseEntity {
   @Column('text', {nullable: true})
   socialMedia: SocialMedia | null
 
+  @Column('text', {nullable: true})
+  pictureURL: string | null
   
-  @Column('boolean', {nullable: true})
+  @Column('boolean')
   hasPaid: boolean
-
-  @Column('json', {nullable: true})
-  votes: Votes | null
-
-  @Column('integer', {nullable: true})
-  rank: number | null
 
   @OneToMany(_ => Owner, owner => owner.coach)
   owners: Owner[]

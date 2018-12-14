@@ -13,6 +13,8 @@ import CoachController from './coach/controller'
 import EventsController from './events/controller'
 import GameController from './game/controller'
 import OwnerController from './owner/controller'
+import { CoachVoteController, PlayerVoteController } from './votes/controller'
+
 
 const app = new Koa()
 const server = new Server(app.callback())
@@ -28,7 +30,9 @@ useKoaServer(app, {
       CoachController,
       EventsController,
       GameController,
-      OwnerController
+      OwnerController,
+      CoachVoteController,
+      PlayerVoteController
 
   ],
   authorizationChecker: (action: Action) => {
