@@ -18,7 +18,8 @@ export default class UserController {
             firstName,
             lastName,
             email,
-            isAdmin: false
+            isAdmin: false,
+            account
             })
         await entity.setPassword(password)
         const user = await entity.save()
