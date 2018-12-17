@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Body, Post } from 'routing-controllers';
+import { JsonController, Get, Param, Body, Post } from 'routing-controllers'
 import User from './entity'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
@@ -23,21 +23,22 @@ export default class UserController {
         await entity.setPassword(password)
         const user = await entity.save()
 
+        // Create a new Player when signing up
         if (account.includes('player')) {
             await Player.create({
                 user,
-                location: "",
-                description: "",
                 nominatedTeams: [],
-                hasPaid: false
+                hasPaid: false,
+                outOfArea: false
             }).save()
         }
 
+        // Create a new Coach when signing up
         if (account.includes('coach')) {
             await Coach.create({
                 user,
-                description: "",
-                hasPaid: false
+                hasPaid: false,
+                nominatedTeam: null
             }).save()
         }
 
@@ -54,17 +55,17 @@ export default class UserController {
     }
 
 
+    @Get('/users')
+    async allUsers() {
+        const users = await User.find()
+        return { users }
+    }
+
     @Get('/users/:id([0-9]+)')
     async getUser(
         @Param('id') id: number
     ) {
-        const users = await User.findOne(id)
-        return { users }
-    }
-
-    @Get('/users')
-    async allUsers() {
-        const user = await User.find()
+        const user = await User.findOne(id)
         return { user }
     }
 }

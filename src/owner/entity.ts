@@ -25,8 +25,8 @@ export default class Owner extends BaseEntity {
   votingPower: number
 
   // Voting process
-  @ManyToOne(() => Coach, coach => coach.owners, {eager: true}) 
-  coach: Coach
+  @ManyToOne(() => Coach, coach => coach.owners, {eager: true, nullable: true}) 
+  coach: Coach | null
 
   @ManyToMany(_ => Player, player => player.owners, {eager: true})
   @JoinTable()

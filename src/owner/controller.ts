@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Post, HttpCode, Authorized, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Param, Post, HttpCode, Authorized, BadRequestError, CurrentUser, Body, Patch, NotFoundError } from 'routing-controllers'
 import User from '../users/entity'
 import Owner from './entity'
 import Team from '../team/entity'
@@ -6,7 +6,7 @@ import Coach from '../coach/entity'
 import Player from '../player/entity' 
 import { CoachVote, PlayerVote } from '../votes/entity'
 import { reCalculateVotingPower } from '../votealgorithm'
-
+import { In } from 'typeorm'
 
 
 @JsonController()
@@ -70,31 +70,37 @@ export default class OwnerController {
   @Patch('/owners/:id([0-9]+)')
   async updateOwner(
     @Param('id') id: number,
+    @CurrentUser() currentUser: User,
     @Body() update
   ) {
     const owner = await Owner.findOne(id)
     if (!owner) throw new NotFoundError('Cannot find owner')
 
-    if (!owner.team) {
-      const team = await Team.findOne(update.teamId)
-      owner!.team = team!
-      owner.save()
+    if (owner.user.id !== currentUser.id) {
+      throw new BadRequestError(`You are not allowed to buy shares for a different owner, but only for yourself`)
     }
 
-    owner.team!.totalShares += await Number(update.shares!)
-    await owner.team!.save()
+    if (!owner.team) {
+      const team = await Team.findOne(update.teamId)
+      if (!team) throw new NotFoundError('Cannot find team')
+      owner.team = await team
+      await owner.save()
+    }
 
-    owner.shares += await Number(update.shares!)
+    owner.team.totalShares += await Number(update.shares)
+    await owner.team.save()
+
+    owner.shares += await Number(update.shares)
     await owner.save()
 
     owner.votingPower = await Math.round(Math.min(Number(owner.shares), 0.4 * Number(owner.team!.totalShares)))
     await owner.save()
 
     // Re-calculate the voting power and new votes of all the owners that have shares in the team
-    reCalculateVotingPower(owner.team!)
+    reCalculateVotingPower(owner.team)
     await owner.save()
 
-    return {owner}
+    return { owner }
   }
 
 
@@ -106,39 +112,75 @@ export default class OwnerController {
     @Param('id') id: number,
     @Body() update: Partial<Coach>
   ) {
-    const owner = await Owner.findOne(id)
+
     if (!currentUser.account.includes('owner')) {
       throw new NotFoundError('You are not an owner')
     }
 
+    const owner = await Owner.findOne(id)
     if (!owner) throw new NotFoundError('Cannot find owner')
+
+    if (owner.user.id !== currentUser.id) throw new BadRequestError(`You can't vote on behalf of another owner`)
+
+    if (owner.coach) throw new BadRequestError(`You have already voted for a coach`)
 
     const coach = await Coach.findOne(update.id)
     if (!coach) throw new NotFoundError('Cannot find coach')
 
-    if (!coach.hasPaid) {
+    if (!coach.hasPaid) throw new BadRequestError(`Coach ${coach.user.lastName} needs to pay to be nominated`)
 
-      const vote = await CoachVote.create({
-        coachId: coach!.id,
-        ownerId: id,
-        teamId: owner.team.id,
-        votes: owner.votingPower
-      }).save()
-  
-      owner.coach = coach
-      owner.save()
-      
-      if (!coach.nominatedTeams!.includes(owner.team)) {
-        coach.nominatedTeams!.push(owner.team)
-        coach.save()
-      }
-      
-      return {vote}
+    if (!coach.nominatedTeam) {
+      throw new BadRequestError(`Coach ${coach.user.lastName} is not nominated for any team`)
+    } 
+    
+    if (coach.nominatedTeam.id !== owner.team.id) {
+      throw new BadRequestError(`Coach ${coach.user.lastName} is not nominated for ${owner.team.name}, which is your team`)
     }
+
+
+    const vote = await CoachVote.create({
+      coachId: coach.id,
+      ownerId: id,
+      teamId: owner.team.id,
+      votes: owner.votingPower
+    }).save()
+
+    owner.coach = await coach
+    await owner.save()
+    
+    return { vote }
   }
 
 
-    // When voting for a Player
+  // When unvoting for a Coach
+  @Authorized() 
+  @Patch('/owners/:id([0-9]+)/unvotecoach')
+  async ownerUnvoteCoach(
+    @CurrentUser() currentUser: User,
+    @Param('id') id: number
+  ) {
+
+    if (!currentUser.account.includes('owner')) {
+      throw new NotFoundError('You are not an owner')
+    }
+
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
+    if (owner.user.id !== currentUser.id) throw new BadRequestError(`You can't unvote on behalf of another owner`)
+
+    if (!owner.coach) throw new BadRequestError('You have not voted for a coach yet')
+
+    const entity = await CoachVote.find({where:{coachId: owner.coach.id, ownerId: owner.id}})
+    await entity[0].remove()
+    owner.coach = await null
+    await owner.save()
+
+    return { owner }
+  }
+
+
+  // When voting for a Player
   @Authorized() 
   @Patch('/owners/:id([0-9]+)/voteplayer')
   async ownerVotePlayer(
@@ -146,33 +188,91 @@ export default class OwnerController {
     @Param('id') id: number,
     @Body() update: Partial<Player>
   ) {
-    const owner = await Owner.findOne(id)
-    if (!owner) throw new NotFoundError('Cannot find owner')
+
     if (!currentUser.account.includes('owner')) {
       throw new NotFoundError('You are not an owner')
     }
 
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
+    if (owner.user.id !== currentUser.id) throw new BadRequestError(`You can't vote on behalf of another owner`)
+
     const player = await Player.findOne(update.id)
     if (!player) throw new NotFoundError('Cannot find player')
 
-    if (!player.hasPaid) {
+    if (!player.hasPaid) throw new BadRequestError(`Player ${player.user.lastName} needs to pay to be nominated`)
 
-      const vote = await PlayerVote.create({
-        playerId: player!.id,
-        ownerId: id,
-        teamId: owner.team.id,
-        votes: owner.votingPower
-      }).save()
-
-      owner.players.push(player)
-      owner.save()
-      
-      if (!player.nominatedTeams!.includes(owner.team)) {
-        player.nominatedTeams!.push(owner.team)
-        player.save()
-      }
-      
-      return {vote}
+    if (player.nominatedTeams!.length === 0) {
+      throw new BadRequestError(`Player ${player.user.lastName} is not nominated for any team`)
+    } 
+    
+    const teamsIds = player.nominatedTeams!.map(team => team.id)
+    if (!teamsIds.includes(owner.team.id)) {
+      throw new BadRequestError(`Player ${player.user.lastName} is not nominated for ${owner.team.name}, which is your team`)
     }
+
+    const playersIds = owner.players.map(player => player.id)
+    if (playersIds.includes(player.id)) {
+      throw new BadRequestError(`You have already voted for player ${player.user.lastName}`)
+    }
+
+    // This needs some extra checking for female, male, outOfArea players in the future
+    if (owner.players.length > 16) {
+      throw new BadRequestError(`You can't vote for another player`)
+    }
+
+
+    const vote = await PlayerVote.create({
+      playerId: player.id,
+      ownerId: id,
+      teamId: owner.team.id,
+      votes: owner.votingPower
+    }).save()
+
+    owner.players.push(player)
+    owner.save()
+    
+    return { vote }
+  }
+
+  // When unvoting for a Player
+  @Authorized() 
+  @Patch('/owners/:id([0-9]+)/unvoteplayer')
+  async ownerUnvotePlayer(
+    @CurrentUser() currentUser: User,
+    @Param('id') id: number,
+    @Body() data
+  ) {
+
+    if (!currentUser.account.includes('owner')) {
+      throw new NotFoundError('You are not an owner')
+    }
+
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
+    if (owner.user.id !== currentUser.id) throw new BadRequestError(`You can't unvote on behalf of another owner`)
+
+    const { pId } = data
+
+    const player = await Player.findOne(pId)
+    if (!player) throw new NotFoundError('Cannot find player')
+
+    const playersIds = await owner.players.map(_ => _.id)
+    if (!playersIds.includes(pId)) {
+      throw new BadRequestError(`You haven't voted for this player`)
+    }
+
+    const voteEntity = await PlayerVote.find({where:{playerId: pId, ownerId: id}})
+    await voteEntity[0].remove()  
+
+    playersIds.splice(playersIds.indexOf(pId), 1)
+    const players = await Player.find({where:{id: In(playersIds)}})
+
+    owner.players = await players
+    await owner.save()
+
+    return { owner }
   }
 }

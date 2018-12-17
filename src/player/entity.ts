@@ -1,8 +1,9 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm'
-import { MinLength, IsString } from 'class-validator'
+import { MinLength, IsString, IsBoolean } from 'class-validator'
 import User from '../users/entity'
 import Owner from '../owner/entity'
 import Team from '../team/entity'
+import { SocialMedia } from '../coach/entity'
 
 export type Votes = {
   teamName: Team | undefined
@@ -11,11 +12,6 @@ export type Votes = {
 
 type Gender = "female" | "male"
 
-type SocialMedia = {
-  facebook: string
-  instagram: string
-  twitter: string
-}
 
 @Entity()
 export default class Player extends BaseEntity {
@@ -30,12 +26,16 @@ export default class Player extends BaseEntity {
   @IsString()
   @MinLength(2)
   @Column('text', {nullable: true})
-  location: string
+  gender: Gender
 
   @IsString()
   @MinLength(2)
   @Column('text', {nullable: true})
-  gender: Gender
+  location: string
+
+  @IsBoolean()
+  @Column('boolean', {nullable: true})
+  outOfArea: boolean
 
   @IsString()
   @MinLength(2)
@@ -45,17 +45,20 @@ export default class Player extends BaseEntity {
   @Column('text', {nullable: true})
   socialMedia: SocialMedia | null
 
+  @IsString()
   @Column('text', {nullable: true})
   pictureURL: string | null
 
-  @Column('boolean', {nullable: true})
+  @IsBoolean()
+  @Column('boolean')
   hasPaid: boolean
 
-  @ManyToMany(() => Owner, owner => owner.players)
-  owners: Owner[] | null
 
   @ManyToMany(() => Team, team => team.nominatedPlayers, {eager: true})
   @JoinTable()
   nominatedTeams: Team[] | null
+
+  @ManyToMany(() => Owner, owner => owner.players, {lazy: true})
+  owners: Owner[] | null
 
 }

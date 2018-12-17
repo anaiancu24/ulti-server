@@ -1,6 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm'
-import { Exclude } from 'class-transformer';
-import { MinLength, IsString, IsEmail } from 'class-validator';
+import { Exclude } from 'class-transformer'
+import { MinLength, IsString, IsEmail } from 'class-validator'
 import * as bcrypt from 'bcrypt'
 import Player from '../player/entity'
 import Coach from '../coach/entity'

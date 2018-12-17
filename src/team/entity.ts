@@ -17,16 +17,16 @@ export default class Team extends BaseEntity {
 
   @IsString()
   @MinLength(2)
-  @Column('text', {nullable:true})
+  @Column('text')
   location: string
 
   @Column('integer')
   totalShares: number
 
-  @OneToMany(_ => Owner, owner => owner.team)
+  @OneToMany(_ => Owner, owner => owner.team, {lazy: true})
   owners: Owner[]
 
-  @ManyToMany(_ => Coach, coach => coach.nominatedTeams, {lazy: true})
+  @OneToMany(_ => Coach, coach => coach.nominatedTeam, {lazy: true})
   nominatedCoaches: Coach[] | null
 
   @ManyToMany(_ => Player, player => player.nominatedTeams, {lazy: true})

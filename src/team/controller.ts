@@ -24,11 +24,12 @@ export default class TeamController {
   @Post('/teams')
   @HttpCode(201)
   async createTeam(
-    @Body() { name }
+    @Body() { name, location }
   ) {
 
     const entity = await Team.create({
       name,
+      location,
       totalShares: 0
     }).save()
 

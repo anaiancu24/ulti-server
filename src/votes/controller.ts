@@ -1,62 +1,72 @@
 import { JsonController, Get, Param, NotFoundError } from 'routing-controllers'
 import { CoachVote, PlayerVote } from './entity'
-import Team from '../team/entity';
+import Team from '../team/entity'
+import Coach from '../coach/entity'
+import Player from '../player/entity'
 
 
 @JsonController()
 export class CoachVoteController {
 
   @Get('/coachvotes')
-  async allCoachVotes() {
-    const coachVotes = await CoachVote.find()
-    return { coachVotes }
+  async allCoachesVotes() {
+    const coachesVotes = await CoachVote.find()
+    return { coachesVotes }
   }
 
   @Get('/coachvotes/:id')
-  async getCoachVote(
+  async getCoachVotes(
     @Param('id') id: number
   ) {
-    const coachVote = await CoachVote.find({where: {coachId: id}})
-    return { coachVote }
+    const coach = await Coach.findOne(id)
+    if (!coach) throw new NotFoundError(`This coach doesn't exist!`)
+
+    const coachVotes = await CoachVote.find({where: {coachId: id}})
+    return { coachVotes }
   }
 
-  @Get('/coachesvotedforteam/:id')
-  async getCoachesVotedforTeam(
+  @Get('/coachesvotesforteam/:id')
+  async getCoachesVotesforTeam(
     @Param('id') id: number
   ) {
     const team = await Team.findOne(id)
     if (!team) throw new NotFoundError(`This team doesn't exist!`)
 
-    const coaches = await team.nominatedCoaches
-    return { coaches }
+    const votes = await CoachVote.find({where: {teamId: id}})
+
+    return { votes }
   }
 }
 
 @JsonController()
 export class PlayerVoteController {
 
-  @Get('/playervotes')
-  async allPlayerVotes() {
-    const playerVotes = await PlayerVote.find()
+  @Get('/playersvotes')
+  async allPlayersVotes() {
+    const playersVotes = await PlayerVote.find()
+    return { playersVotes }
+  }
+
+  @Get('/playersvotes/:id')
+  async getPlayerVotes(
+    @Param('id') id: number
+  ) {
+    const player = await Player.findOne(id)
+    if (!player) throw new NotFoundError(`This player doesn't exist!`)
+
+    const playerVotes = await PlayerVote.find({where: {playerId: id}})
     return { playerVotes }
   }
 
-  @Get('/playervotes/:id')
-  async getPlayerVote(
-    @Param('id') id: number
-  ) {
-    const playerVote = await PlayerVote.find({where: {playerId: id}})
-    return { playerVote }
-  }
-
-  @Get('/playersvotedforteam/:id')
-  async getPlayersVotedforTeam(
+  @Get('/playersvotesforteam/:id')
+  async getPlayersVotesforTeam(
     @Param('id') id: number
   ) {
     const team = await Team.findOne(id)
     if (!team) throw new NotFoundError(`This team doesn't exist!`)
 
-    const players = await team.nominatedPlayers
-    return { players }
+    const votes = await PlayerVote.find({where: {teamId: id}})
+
+    return { votes }
   }
 }

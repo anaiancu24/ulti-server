@@ -1,11 +1,11 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, JoinTable, OneToOne, Column, OneToMany, ManyToMany } from 'typeorm'
-import { MinLength, IsString } from 'class-validator'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne, Column, OneToMany, ManyToOne } from 'typeorm'
+import { MinLength, IsString, IsBoolean } from 'class-validator'
 import User from '../users/entity'
 import Owner from '../owner/entity'
 import Team from '../team/entity'
 
 
-type SocialMedia = {
+export type SocialMedia = {
   facebook: string
   instagram: string
   twitter: string
@@ -32,14 +32,14 @@ export default class Coach extends BaseEntity {
   @Column('text', {nullable: true})
   pictureURL: string | null
   
+  @IsBoolean()
   @Column('boolean')
   hasPaid: boolean
 
-  @OneToMany(_ => Owner, owner => owner.coach)
+  @OneToMany(_ => Owner, owner => owner.coach, {lazy: true})
   owners: Owner[]
 
-  @ManyToMany(_ => Team, team => team.nominatedCoaches, {eager: true})
-  @JoinTable()
-  nominatedTeams: Team[] | null
+  @ManyToOne(_ => Team, team => team.nominatedCoaches, {eager: true})
+  nominatedTeam: Team | null
 
 }
