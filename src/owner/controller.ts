@@ -18,11 +18,14 @@ export default class OwnerController {
     return { owners }
   }
 
-  @Get('/owners/:id')
+  @Authorized()
+  @Get('/owner')
   async getOwner(
-    @Param('id') id: number
+    @CurrentUser() currentUser: User
   ) {
-    const owner = await Owner.findOne(id)
+    const owner = await Owner.findOne({where: {user: currentUser}})
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
     return { owner }
   }
 
