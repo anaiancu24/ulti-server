@@ -276,17 +276,17 @@ export default class OwnerController {
       }
     }
 
-    const vote = await PlayerVote.create({
+    await PlayerVote.create({
       playerId: player.id,
       ownerId: id,
       teamId: owner.team.id,
       votes: owner.votingPower
     }).save()
 
-    owner.players.push(player)
-    owner.save()
+    await owner.players.push(player)
+    await owner.save()
     
-    return { vote }
+    return { owner }
   }
 
   // When unvoting for a Player
