@@ -30,6 +30,29 @@ export default class OwnerController {
   }
 
 
+  // Get all the nominated players for a team
+  @Get('/loadavailableplayersforowner/:id')
+  async getNominatedPlayers(
+    @Param('id') id: number
+  ) {
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError(`Cannot find owner`)
+
+    const team = await owner.team
+
+    const players = await Player.find()
+
+    const possiblePlayers = players.map(player => {
+      const teamsIds = player.nominatedTeams!.map(item => item.id)
+      return (teamsIds.includes(team.id) ? player : null)
+    })
+
+    const availablePlayers = possiblePlayers.filter(player => player)
+
+    return { availablePlayers }
+  }
+
+
   // Create a new Owner when buying shares for a team
   @Authorized()
   @Post('/owners')

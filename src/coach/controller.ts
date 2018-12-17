@@ -13,11 +13,14 @@ export default class CoachController {
     return { coaches }
   }
 
-  @Get('/coaches/:id')
+  @Authorized()
+  @Get('/coach')
   async getCoach(
-    @Param('id') id: number
+    @CurrentUser() currentUser: User
   ) {
-    const coach = await Coach.findOne(id)
+    const coach = await Coach.findOne({where: {user: currentUser}})
+    if (!coach) throw new NotFoundError('Cannot find coach')
+
     return { coach }
   }
 

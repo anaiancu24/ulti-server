@@ -14,12 +14,13 @@ export default class PLayerController {
     return { players }
   }
 
-  @Get('/players/:id')
+  @Authorized()
+  @Get('/player')
   async getPlayer(
-    @Param('id') id: number
+    @CurrentUser() currentUser: User
   ) {
-    const player = await Player.findOne(id)
-    if (!player) throw new NotFoundError(`Player with id ${id} doesn't exist`)
+    const player = await Player.findOne({where: {user: currentUser}})
+    if (!player) throw new NotFoundError('Cannot find player')
 
     return { player }
   }
