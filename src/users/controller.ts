@@ -1,4 +1,4 @@
-import { JsonController, Get, Param, Body, Post } from 'routing-controllers'
+import { JsonController, Get, Authorized, CurrentUser, Body, Post, NotFoundError } from 'routing-controllers'
 import User from './entity'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
@@ -61,11 +61,14 @@ export default class UserController {
         return { users }
     }
 
-    @Get('/users/:id([0-9]+)')
+    @Authorized()
+    @Get('/user')
     async getUser(
-        @Param('id') id: number
+        @CurrentUser() currentUser: User
     ) {
-        const user = await User.findOne(id)
+        const user = await User.findOne(currentUser.id)
+        if (!user) throw new NotFoundError(`Cannot find user`)
+        
         return { user }
     }
 }
