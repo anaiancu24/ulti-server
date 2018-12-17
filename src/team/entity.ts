@@ -1,8 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm'
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, ManyToOne } from 'typeorm'
 import { MinLength, IsString } from 'class-validator'
 import Owner from '../owner/entity'
 import Coach from '../coach/entity'
 import Player from '../player/entity'
+import Event from '../events/entity'
 
 @Entity()
 export default class Team extends BaseEntity {
@@ -31,4 +32,7 @@ export default class Team extends BaseEntity {
 
   @ManyToMany(_ => Player, player => player.nominatedTeams, {lazy: true})
   nominatedPlayers: Player[] | null
+
+  @ManyToOne(_ => Event, event => event.teams, {lazy: true})
+  event: Event
 }

@@ -7,7 +7,7 @@ export default class EventsController {
 
   @Get('/events')
   async allEvents() {
-    const events = await Event.find({relations: ['games']})
+    const events = await Event.find()
     return { events }
   }
 
@@ -25,7 +25,7 @@ export default class EventsController {
   @Post('/events')
   @HttpCode(201)
   async createEvent(
-    @Body() {location, name, startDate, endDate}:Event
+    @Body() { location, name, startDate, endDate, teams }: Partial<Event>
   ) {
 
       const entity = await Event.create({
@@ -34,7 +34,7 @@ export default class EventsController {
         startDate,
         endDate,
         games: null,
-        teams: null
+        teams
       }).save()
 
       return { entity }

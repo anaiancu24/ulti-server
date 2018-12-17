@@ -26,11 +26,9 @@ export default class Event extends BaseEntity {
   @Column('date', {nullable: true})
   endDate: Date | null
 
-  @Column('simple-array', {nullable: true})
+  @OneToMany(() => Team, team => team.event, {eager: true, nullable: true})
   teams: Team[] | null
 
-
-  @OneToMany(() => Game, game => game.event, {nullable: true})
-  // @JoinColumn({name: 'games'}) 
-  games: Game[] | null;
+  @OneToMany(() => Game, game => game.event, {eager: true, nullable: true})
+  games: Game[] | null
 }
