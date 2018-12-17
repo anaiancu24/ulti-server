@@ -302,4 +302,31 @@ export default class OwnerController {
 
     return { owner }
   }
+
+  // Clear the whole selection of the owner
+  @Authorized() 
+  @Patch('/owners/:id([0-9]+)/clearselection')
+  async clearSelection(
+    @CurrentUser() currentUser: User,
+    @Param('id') id: number,
+  ) {
+
+    if (!currentUser.account.includes('owner')) {
+      throw new NotFoundError('You are not an owner')
+    }
+
+    const owner = await Owner.findOne(id)
+    if (!owner) throw new NotFoundError('Cannot find owner')
+
+    if (owner.user.id !== currentUser.id) throw new BadRequestError(`You can't clear the selection of another owner`)
+
+    const voteEntity = await PlayerVote.find({where:{ownerId: id}})
+    await voteEntity.map(async _ => await _.remove())
+
+    owner.players = []
+    await owner.save()
+
+    return { owner }
+  }
+
 }
