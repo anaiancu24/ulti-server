@@ -164,7 +164,7 @@ export default class OwnerController {
     }
 
 
-    const vote = await CoachVote.create({
+    await CoachVote.create({
       coachId: coach.id,
       ownerId: id,
       teamId: owner.team.id,
@@ -174,7 +174,7 @@ export default class OwnerController {
     owner.coach = await coach
     await owner.save()
     
-    return { vote }
+    return { owner }
   }
 
 
@@ -312,20 +312,23 @@ export default class OwnerController {
     const player = await Player.findOne(pId)
     if (!player) throw new NotFoundError('Cannot find player')
 
-    const playersIds = await owner.players.map(_ => _.id)
-    if (!playersIds.includes(pId)) {
-      throw new BadRequestError(`You haven't voted for this player`)
+    if (owner.players.length > 0) {
+      const playersIds = await owner.players.map(_ => _.id)
+      if (!playersIds.includes(pId)) {
+        throw new BadRequestError(`You haven't voted for this player`)
+      }
+
+      const voteEntity = await PlayerVote.find({where:{playerId: pId, ownerId: id}})
+      await voteEntity[0].remove()  
+  
+      playersIds.splice(playersIds.indexOf(pId), 1)
+      const players = await Player.find({where:{id: In(playersIds)}})
+  
+      owner.players = await players
+      await owner.save()
+  
+      return { owner }
     }
-
-    const voteEntity = await PlayerVote.find({where:{playerId: pId, ownerId: id}})
-    await voteEntity[0].remove()  
-
-    playersIds.splice(playersIds.indexOf(pId), 1)
-    const players = await Player.find({where:{id: In(playersIds)}})
-
-    owner.players = await players
-    await owner.save()
-
     return { owner }
   }
 
