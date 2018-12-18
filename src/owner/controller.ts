@@ -312,24 +312,36 @@ export default class OwnerController {
     const player = await Player.findOne(pId)
     if (!player) throw new NotFoundError('Cannot find player')
 
-    if (owner.players.length > 0) {
-      const playersIds = await owner.players.map(_ => _.id)
-      if (!playersIds.includes(pId)) {
-        throw new BadRequestError(`You haven't voted for this player`)
-      }
+    if (owner.players.length === 0) {
+      throw new BadRequestError(`You have not voted for any player`)
+    }
 
-      const voteEntity = await PlayerVote.find({where:{playerId: pId, ownerId: id}})
-      await voteEntity[0].remove()  
-  
-      playersIds.splice(playersIds.indexOf(pId), 1)
+    const playersIds = await owner.players.map(_ => _.id)
+    if (!playersIds.includes(pId)) {
+      throw new BadRequestError(`You haven't voted for this player`)
+    }
+
+    const voteEntity = await PlayerVote.find({where:{playerId: pId, ownerId: id}})
+    await voteEntity[0].remove()
+
+    playersIds.splice(playersIds.indexOf(pId), 1)
+    
+    if (playersIds.length > 0) {
       const players = await Player.find({where:{id: In(playersIds)}})
-  
+
       owner.players = await players
       await owner.save()
-  
+
+      return { owner }
+
+    } else {
+      const players = []
+
+      owner.players = await players
+      await owner.save()
+
       return { owner }
     }
-    return { owner }
   }
 
   // Clear the whole selection of the owner
