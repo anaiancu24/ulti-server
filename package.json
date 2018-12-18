@@ -4,11 +4,10 @@
   "main": "target/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node .",
+    "start": "nodemon .",
     "test": "node_modules/.bin/mocha --require ts-node/register src/**/*.spec.ts",
     "watch": "node_modules/.bin/tsc -w",
-    "compile": "node_modules/.bin/tsc -p .",
-    "postinstall": "tsc -p ."
+    "compile": "node_modules/.bin/tsc -p ."
   },
   "devDependencies": {
     "nodemon": "^1.18.8"
@@ -28,7 +27,6 @@
     "koa-bodyparser": "^4.2.1",
     "koa-multer": "^1.0.2",
     "koa-router": "^7.4.0",
-    "node": "^11.4.0",
     "pg": "^7.7.1",
     "routing-controllers": "^0.7.7",
     "ts-node": "^7.0.1",
