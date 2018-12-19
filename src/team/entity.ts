@@ -21,6 +21,10 @@ export default class Team extends BaseEntity {
   @Column('text')
   location: string
 
+  @IsString()
+  @Column('text')
+  logo: string
+
   @Column('integer')
   totalShares: number
 
@@ -34,5 +38,5 @@ export default class Team extends BaseEntity {
   nominatedPlayers: Player[] | null
 
   @ManyToOne(_ => Event, event => event.teams, {lazy: true})
-  event: Event
+  event: Event | null
 }

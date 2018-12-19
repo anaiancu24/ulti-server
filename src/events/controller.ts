@@ -25,7 +25,7 @@ export default class EventsController {
   @Post('/events')
   @HttpCode(201)
   async createEvent(
-    @Body() { location, name, startDate, endDate, teams }: Partial<Event>
+    @Body() { location, name, startDate, endDate }: Partial<Event>
   ) {
 
       const entity = await Event.create({
@@ -34,7 +34,6 @@ export default class EventsController {
         startDate,
         endDate,
         games: null,
-        teams
       }).save()
 
       return { entity }

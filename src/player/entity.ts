@@ -5,13 +5,8 @@ import Owner from '../owner/entity'
 import Team from '../team/entity'
 import { SocialMedia } from '../coach/entity'
 
-export type Votes = {
-  teamName: Team | undefined
-  numberOfVotes: number
-}
 
 type Gender = "female" | "male"
-
 
 @Entity()
 export default class Player extends BaseEntity {

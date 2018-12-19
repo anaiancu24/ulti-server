@@ -11,20 +11,19 @@ export default class Event extends BaseEntity {
 
   @IsString()
   @MinLength(2)
-  @Column('text', {nullable: true})
+  @Column('text')
   name: string
 
   @IsString()
   @MinLength(2)
-  @Column('text', {nullable: true})
+  @Column('text')
   location: string
-
   
-  @Column('date', {nullable: true})
-  startDate: Date | null
+  @Column('date')
+  startDate: Date
 
-  @Column('date', {nullable: true})
-  endDate: Date | null
+  @Column('date')
+  endDate: Date
 
   @OneToMany(() => Team, team => team.event, {eager: true, nullable: true})
   teams: Team[] | null
