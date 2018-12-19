@@ -82,7 +82,7 @@ export default class PLayerController {
 
     if (update.nominatedTeams && update.nominatedTeams!.length > 0) {
       if (!player.hasPaid) {
-        throw new BadRequestError(`Player need to pay in order to be nominated`)
+        throw new BadRequestError(`Player needs to pay in order to be nominated`)
       } else {
         const teamsIds = update.nominatedTeams!.map(team => team.id)
         const teams = await Team.find({where: {id: In(teamsIds)}})

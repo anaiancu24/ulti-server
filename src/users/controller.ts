@@ -1,4 +1,4 @@
-import { JsonController, Get, Authorized, CurrentUser, Body, Post, NotFoundError } from 'routing-controllers'
+import { JsonController, Get, Patch, Authorized, CurrentUser, Body, Post, Param, NotFoundError, UnauthorizedError } from 'routing-controllers'
 import User from './entity'
 import Player from '../player/entity'
 import Coach from '../coach/entity'
@@ -69,6 +69,26 @@ export default class UserController {
         const user = await User.findOne(currentUser.id)
         if (!user) throw new NotFoundError(`Cannot find user`)
         
+        return { user }
+    }
+
+
+    @Authorized()
+    @Patch('/users/:id([0-9]+)')
+    async updateUser(
+        @Param('id') id: number,
+        @Body() update: Partial<User>
+    ) {
+        const user = await User.findOne(id)
+        if (!user) throw new NotFoundError(`Cannot find user`)
+
+        if (!user.isAdmin) {
+            throw new UnauthorizedError(`You need to be an administrator to change information of users`)
+        }
+
+        const updatedUser = await User.merge(user, update)
+        await updatedUser.save()
+
         return { user }
     }
 }

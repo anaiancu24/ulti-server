@@ -4,6 +4,8 @@ import Owner from '../owner/entity'
 import Coach from '../coach/entity'
 import Player from '../player/entity'
 import Event from '../events/entity'
+import Game from '../game/entity'
+
 
 @Entity()
 export default class Team extends BaseEntity {
@@ -39,4 +41,10 @@ export default class Team extends BaseEntity {
 
   @ManyToOne(_ => Event, event => event.teams, {lazy: true})
   event: Event | null
+
+  @OneToMany(_ => Game, game => game.homeTeam, {lazy: true})
+  homeGame: Game[] | null
+
+  @OneToMany(_ => Game, game => game.awayTeam, {lazy: true})
+  awayGame: Game[] | null
 }

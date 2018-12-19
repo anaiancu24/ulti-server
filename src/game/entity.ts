@@ -1,7 +1,8 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne} from 'typeorm'
 import { IsString } from 'class-validator'
 import Event from '../events/entity'
-// import Team from '../team/entity'
+import Team from '../team/entity'
+
 
 @Entity()
 export default class Game extends BaseEntity {
@@ -9,11 +10,11 @@ export default class Game extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
   
-  @Column('integer')
-  homeScore: number
+  @Column('integer', {nullable: true})
+  homeScore: number | null
 
-  @Column('integer')
-  awayScore: number
+  @Column('integer', {nullable: true})
+  awayScore: number | null
 
   @IsString()
   @Column('text', {nullable: true})
@@ -22,15 +23,23 @@ export default class Game extends BaseEntity {
   @Column('date', {nullable:true})
   date: Date | null
 
+  @IsString()
+  @Column('text', {nullable: true})
+  hour: string | null
 
-  // @Column('json')
-  // report: JSON
+  @IsString()
+  @Column('text', {nullable: true})
+  stage: string | null
 
-  // @ManyToMany(_ => Team, team => team.games)
-  // @JoinTable()
-  // teams: Team[] 
+  @Column('json', {nullable:true})
+  report: JSON | null
+
+  @ManyToOne(_ => Team, team => team.homeGame, {eager: true})
+  homeTeam: Team | null | String
+
+  @ManyToOne(_ => Team, team => team.awayGame, {eager: true})
+  awayTeam: Team | null | String
 
   @ManyToOne(() => Event, event => event.games)
   event: Event | null
-
 }

@@ -248,6 +248,10 @@ export default class OwnerController {
       throw new BadRequestError(`You can't vote for another player`)
     }
 
+    const playersGender = await owner.players.map(_ => _.gender)
+    const malePlayers = await playersGender.filter(gender => gender === "male")
+    const femalePlayers = await playersGender.filter(gender => gender === "female")
+
     if (player.outOfArea) {
       const outOfAreaPlayers = await owner.players.filter(player => player.outOfArea)
       if (outOfAreaPlayers.length === 2) {
@@ -256,17 +260,24 @@ export default class OwnerController {
       const maleOutOfAreaPlayers = await outOfAreaPlayers.filter(_ => _.gender === "male")
       const femaleOutOfAreaPlayers = await outOfAreaPlayers.filter(_ => _.gender === "female")
 
+      if (player.gender === "male") {
+        if (malePlayers.length === 7 ) {
+          throw new BadRequestError(`You have already voted for 7 male players`)
+        }
 
-      if (player.gender === "male" && maleOutOfAreaPlayers.length === 1) {
-        throw new BadRequestError(`You have already voted for an out of area male player`)
-      }
-      if (player.gender === "female" && femaleOutOfAreaPlayers.length === 1) {
-        throw new BadRequestError(`You have already voted for an out of area female player`)
+        if (maleOutOfAreaPlayers.length === 1) {
+          throw new BadRequestError(`You have already voted for an out of area male player`)
+        }
+      } else {
+        if (femalePlayers.length === 7 ) {
+          throw new BadRequestError(`You have already voted for 7 female players`)
+        }
+
+        if (femaleOutOfAreaPlayers.length === 1) {
+          throw new BadRequestError(`You have already voted for an out of area female player`)
+        }
       }
     } else {
-      const playersGender = await owner.players.map(_ => _.gender)
-      const malePlayers = await playersGender.filter(gender => gender === "male")
-      const femalePlayers = await playersGender.filter(gender => gender === "female")
   
       if (player.gender === 'male' && malePlayers.length === 7) {
         throw new BadRequestError(`You have already voted for 7 male players`)
