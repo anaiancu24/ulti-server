@@ -3,7 +3,6 @@ import { MinLength, IsString, IsBoolean } from 'class-validator'
 import User from '../users/entity'
 import Owner from '../owner/entity'
 import Team from '../team/entity'
-import { SocialMedia } from '../coach/entity'
 
 
 type Gender = "female" | "male"
@@ -28,6 +27,10 @@ export default class Player extends BaseEntity {
   @Column('text', {nullable: true})
   location: string
 
+  @IsString()
+  @Column('text', {nullable: true})
+  position: string | null
+
   @IsBoolean()
   @Column('boolean', {nullable: true})
   outOfArea: boolean
@@ -38,7 +41,7 @@ export default class Player extends BaseEntity {
   description: string
 
   @Column('text', {nullable: true})
-  socialMedia: SocialMedia | null
+  socialMedia: string | null
 
   @IsString()
   @Column('text', {nullable: true})
